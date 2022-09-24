@@ -52,7 +52,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.CompDri
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
-@Config
+//@Config
 public class CompMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6.35, 0, 0.1);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
