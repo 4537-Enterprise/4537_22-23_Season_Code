@@ -52,10 +52,10 @@ import static org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.CompDri
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
-//@Config
+@Config
 public class CompMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6.35, 0, 0.1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1.304347;
 
@@ -75,9 +75,6 @@ public class CompMecanumDrive extends MecanumDrive {
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
-
-    private DigitalChannel redLED;
-    private DigitalChannel greenLED;
 
     public CompMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -122,12 +119,6 @@ public class CompMecanumDrive extends MecanumDrive {
         setLocalizer(new CompTrackingWheelLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-
-        redLED = hardwareMap.get(DigitalChannel.class, "red");
-        greenLED = hardwareMap.get(DigitalChannel.class, "green");
-
-        redLED.setMode(DigitalChannel.Mode.OUTPUT);
-        greenLED.setMode(DigitalChannel.Mode.OUTPUT);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -310,10 +301,5 @@ public class CompMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
-    }
-
-    public void setLed(boolean red, boolean green) {
-        redLED.setState(red);
-        greenLED.setState(green);
     }
 }

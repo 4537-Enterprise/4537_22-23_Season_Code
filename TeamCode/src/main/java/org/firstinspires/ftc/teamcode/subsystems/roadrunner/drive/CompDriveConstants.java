@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
-//@Config
+@Config
 public class CompDriveConstants{
 
     /*
@@ -46,7 +46,7 @@ public class CompDriveConstants{
      */
     public static double WHEEL_RADIUS = 1.8898; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12; // in
+    public static double TRACK_WIDTH = 9.17; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -54,7 +54,7 @@ public class CompDriveConstants{
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.01663; //1.0 / rpmToVelocity(MAX_RPM)
+    public static double kV = 0.015; //1.0 / rpmToVelocity(MAX_RPM)
     public static double kA = 0.002;
     public static double kStatic = 0.05166;
 
@@ -88,8 +88,8 @@ public class CompDriveConstants{
      */
     public static double MAX_VEL = 52.48291908330528;
     public static double MAX_ACCEL = 52.48291908330528;
-    public static double MAX_ANG_VEL = Math.toRadians(273.36816);
-    public static double MAX_ANG_ACCEL = Math.toRadians(273.36816);
+    public static double MAX_ANG_VEL = Math.toRadians(648.590278);
+    public static double MAX_ANG_ACCEL = Math.toRadians(648.590278);
 
 
     public static double encoderTicksToInches(double ticks) {

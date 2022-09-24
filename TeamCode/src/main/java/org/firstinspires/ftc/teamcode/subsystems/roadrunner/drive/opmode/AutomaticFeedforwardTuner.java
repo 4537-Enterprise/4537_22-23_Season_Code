@@ -33,7 +33,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.CompDri
  *      regression.
  */
 @Config
-@Disabled
+//@Disabled
 @Autonomous(group = "drive")
 public class AutomaticFeedforwardTuner extends LinearOpMode {
     public static double MAX_POWER = 0.7;
