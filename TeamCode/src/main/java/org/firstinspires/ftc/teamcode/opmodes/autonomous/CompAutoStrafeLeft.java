@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -10,23 +10,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
-@Autonomous(name = "RoadRunnerDemo", group = "test")
-public class RoadRunnerDemo extends LinearOpMode{
-
+@Autonomous(name = "CompAutoStrafeLeft")
+public class CompAutoStrafeLeft extends LinearOpMode{
 	CompRobot robot;
 
 	Pose2d poseEstimate;
 
 	Trajectory traj1;
-	Trajectory traj2;
-	Trajectory traj3;
-	Trajectory traj4;
 
 	enum TrajectoryState {
 		TRAJ1,
-		TRAJ2,
-		TRAJ3,
-		TRAJ4,
 		IDLE
 	}
 
@@ -45,19 +38,7 @@ public class RoadRunnerDemo extends LinearOpMode{
 		robot.drive.setPoseEstimate(startPose);
 
 		traj1 = robot.drive.trajectoryBuilder(startPose)
-				.forward(50)
-				.build();
-
-		traj2 = robot.drive.trajectoryBuilder(traj1.end())
-				.strafeRight(48)
-				.build();
-
-		traj3 = robot.drive.trajectoryBuilder(traj2.end())
-				.forward(46)
-				.build();
-
-		traj4 = robot.drive.trajectoryBuilder(traj3.end())
-				.strafeLeft(48)
+				.strafeLeft(30)
 				.build();
 
 		/*Pre-Start/Post-Init Loop*/
@@ -69,43 +50,25 @@ public class RoadRunnerDemo extends LinearOpMode{
 			dashboard.sendTelemetryPacket(packet);
 		}
 
+		/*Running OpMode Loop*/
 		while (opModeIsActive()) {
 			robot.drive.update();
+			telemetry.update();
 			poseEstimate = robot.drive.getPoseEstimate();
 			PoseStorage.currentPose = poseEstimate;
 
 			switch (trajectoryState) {
 				case TRAJ1:
 					robot.drive.followTrajectoryAsync(traj1);
-					trajectoryState = TrajectoryState.TRAJ2;
-					break;
-
-				case TRAJ2:
-					if (!robot.drive.isBusy()) {
-						robot.drive.followTrajectoryAsync(traj2);
-						trajectoryState = TrajectoryState.TRAJ3;
-					}
-					break;
-
-				case TRAJ3:
-					if (!robot.drive.isBusy()) {
-						robot.drive.followTrajectoryAsync(traj3);
-						trajectoryState = TrajectoryState.TRAJ4;
-					}
-					break;
-
-				case TRAJ4:
-					if (!robot.drive.isBusy()) {
-						robot.drive.turn(360);
-						trajectoryState = TrajectoryState.IDLE;
-					}
+					trajectoryState = TrajectoryState.IDLE;
 					break;
 
 				case IDLE:
+					if (!robot.drive.isBusy()) {
+						requestOpModeStop();
+					}
 					break;
 			}
-
 		}
-
 	}
 }

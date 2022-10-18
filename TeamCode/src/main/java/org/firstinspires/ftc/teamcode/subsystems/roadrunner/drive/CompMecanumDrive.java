@@ -69,6 +69,15 @@ public class CompMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
+    /* port 0= FL*/
+    /* port 1= FR*/
+    /* port 2= BL*/
+    /* port 3= BR*/
+
+    /* port 0= FL*/
+    /* port 1= BL*/
+    /* port 2= FR*/
+    /* port 3= BR*/
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
