@@ -53,12 +53,33 @@ public class CompTeleOp extends LinearOpMode{
 					)
 			);
 			robot.drive.update();
+			if (gamepad1.b) {
+				robot.flip.holdPosition();
+			}
 
-			if (gamepad2.a) {
+			if (gamepad1.y) {
+				robot.flip.resetPosition();
+			}
+			if (gamepad1.x) {
 				robot.flip.flipPosition();
 			}
-			if (gamepad2.b) {
-				robot.flip.resetPosition();
+
+			if (gamepad1.dpad_right) {
+
+				robot.arm.setArmPositionUp();
+			}
+			if (gamepad1.dpad_left) {
+
+				robot.arm.setArmPositionDown();
+			}
+
+			if (gamepad1.dpad_up) {
+				robot.lift.runToPosition (1000.0,6.0);
+
+			}
+			if (gamepad1.dpad_down) {
+				robot.lift.runToPosition (-1000.0,6.0);
+
 			}
 
 			poseEstimate = robot.drive.getPoseEstimate();
