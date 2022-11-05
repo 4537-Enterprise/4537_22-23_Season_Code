@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.gamepad.ButtonReader;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -15,6 +19,15 @@ public class CompTeleOp extends LinearOpMode{
 	CompRobot robot;
 
 	double speedOverride = 1;
+
+	GamepadEx gamepadEx1 = new GamepadEx(gamepad1);
+	GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
+	ButtonReader dpadUpReader = new ButtonReader(
+			gamepadEx2, GamepadKeys.Button.DPAD_UP
+	);
+	TriggerReader rightTriggerReader = new TriggerReader(
+			gamepadEx2, GamepadKeys.Trigger.RIGHT_TRIGGER
+	);
 
 	Pose2d poseEstimate;
 
@@ -66,19 +79,6 @@ public class CompTeleOp extends LinearOpMode{
 			if (gamepad1.x){
 				robot.flip.flipPosition();
 			}
-			if (gamepad1.a){
-
-				ClawPosition = robot.claw.getPosition();
-
-				if (Claw.CLOSE_POSITION == ClawPosition) {
-					robot.claw.OpenPosition();
-				}
-				if (Claw.OPEN_POSITION == ClawPosition){
-					robot.claw.ClosePosition();
-
-				}
-			}
-
 
 			if (gamepad1.dpad_right){
 				robot.arm.setArmPositionUp();
@@ -137,7 +137,7 @@ public class CompTeleOp extends LinearOpMode{
 			/*if gamepad2.right_trigger {
 
 			}*/
-//right_trigger
+
 
 			poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("x", poseEstimate.getX());
