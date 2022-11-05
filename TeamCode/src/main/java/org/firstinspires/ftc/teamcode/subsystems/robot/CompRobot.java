@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.subsystems.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSwing.ArmSwing;
 import org.firstinspires.ftc.teamcode.subsystems.Flip.Flipper;
 import org.firstinspires.ftc.teamcode.subsystems.Lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.CompMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
 
 public class CompRobot{
 
@@ -16,6 +16,7 @@ public class CompRobot{
 	public Lift lift;
 	public Flipper flip;
 	public ArmSwing arm;
+	public Claw claw;
 
 
 	Telemetry telemetry;
@@ -29,6 +30,7 @@ public class CompRobot{
 		flip = new Flipper(map);
 		arm = new ArmSwing(map);
 		lift = new Lift(map, telemetry);
+		claw = new Claw(map);
 		telemetry.addData("Robot", "Initialized");
 		telemetry.update();
 

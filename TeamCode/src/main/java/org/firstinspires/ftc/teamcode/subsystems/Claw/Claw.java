@@ -13,8 +13,12 @@ public class Claw {
 
     public Claw(HardwareMap map) {
 
-        Claw= map.get(Servo.class, "claw"); /*the link between the code and the physical servo*/
+        Claw = map.get(Servo.class, "claw"); /*the link between the code and    private Servo Claw;
+    /*the link between the code and the physical motor*/
+    }
 
+    public double getPosition() {
+        return Claw.getPosition();
     }
 
     public void setPosition(double position) {
