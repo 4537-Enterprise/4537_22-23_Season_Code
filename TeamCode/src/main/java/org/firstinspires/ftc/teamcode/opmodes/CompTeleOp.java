@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
 @TeleOp(name = "CompTeleOp")
 public class CompTeleOp extends LinearOpMode{
-
+	//dpad sets the pre determined heights and the right trigger executes the program
 	CompRobot robot;
 
 	double speedOverride = 1;
@@ -24,6 +24,8 @@ public class CompTeleOp extends LinearOpMode{
 	public void runOpMode() throws InterruptedException{
 
 		robot = new CompRobot(hardwareMap, telemetry);
+
+		double liftPos = robot.lift.getCurrentPosition();
 
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()) {
@@ -65,7 +67,6 @@ public class CompTeleOp extends LinearOpMode{
 			}
 
 			if (gamepad1.dpad_right) {
-
 				robot.arm.setArmPositionUp();
 			}
 			if (gamepad1.dpad_left) {
@@ -73,12 +74,52 @@ public class CompTeleOp extends LinearOpMode{
 				robot.arm.setArmPositionDown();
 			}
 
-			if (gamepad1.dpad_up) {
-				robot.lift.runToPosition (1000.0,6.0);
+			if (gamepad2.dpad_up) {
+
+				if(liftPos==robot.lift.collection){
+					robot.lift.setNextLevel(robot.lift.active);
+				}
+
+				if(liftPos==robot.lift.active){
+					robot.lift.setNextLevel(robot.lift.groundTerminal);
+				}
+
+				if(liftPos==robot.lift.groundTerminal){
+					robot.lift.setNextLevel(robot.lift.lowTerminal);
+				}
+
+				if(liftPos==robot.lift.lowTerminal){
+					robot.lift.setNextLevel(robot.lift.medTerminal);
+				}
+
+				if(liftPos==robot.lift.medTerminal){
+					robot.lift.setNextLevel(robot.lift.highTerminal);
+				}
+
 
 			}
-			if (gamepad1.dpad_down) {
-				robot.lift.runToPosition (-1000.0,6.0);
+			if (gamepad2.dpad_down) {
+				if(liftPos==robot.lift.highTerminal){
+					robot.lift.setNextLevel(robot.lift.medTerminal);
+				}
+
+				if(liftPos==robot.lift.medTerminal){
+					robot.lift.setNextLevel(robot.lift.lowTerminal);
+				}
+
+				if(liftPos==robot.lift.lowTerminal){
+					robot.lift.setNextLevel(robot.lift.groundTerminal);
+				}
+
+				if(liftPos==robot.lift.groundTerminal){
+					robot.lift.setNextLevel(robot.lift.active);
+				}
+
+				if(liftPos==robot.lift.medTerminal){
+					robot.lift.setNextLevel(robot.lift.highTerminal);
+				}
+
+			}
 
 			}
 
