@@ -135,6 +135,7 @@ public class CompTeleOp extends LinearOpMode{
 
 			}
 
+
 			poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("x", poseEstimate.getX());
 			telemetry.addData("y", poseEstimate.getY());
