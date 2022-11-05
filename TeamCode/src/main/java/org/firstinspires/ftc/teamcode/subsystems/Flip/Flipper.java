@@ -9,6 +9,8 @@ public class Flipper{
 	private Servo Flip;
 
 	public static double FLIP_POSITION = 1;
+	public static double RESET_POSITION = 0.3;
+	public static double HOLD_POSITION = 0;
 
 	public Flipper(HardwareMap map){
 
@@ -16,17 +18,19 @@ public class Flipper{
 
 	}
 
-	public void setPosition(double positon) {
-		Flip.setPosition(positon);
+	public void setPosition(double position) {
+		Flip.setPosition(position);
 	}
 
-	public void flipPosition() {
-		Flip.setPosition(FLIP_POSITION);
-	}
+	public void flipPosition()  { Flip.setPosition(FLIP_POSITION); }
 
 	public void resetPosition() {
-		Flip.setPosition(0);
+		Flip.setPosition(RESET_POSITION);
 	}
+
+	public void holdPosition()  { Flip.setPosition(HOLD_POSITION); }
+
+
 
 }
 

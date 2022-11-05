@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
 @TeleOp(name = "CompTeleOp")
 public class CompTeleOp extends LinearOpMode{
-
+	//dpad sets the pre determined heights and the right trigger executes the program
 	CompRobot robot;
 
 	double speedOverride = 1;
@@ -25,6 +25,8 @@ public class CompTeleOp extends LinearOpMode{
 
 		robot = new CompRobot(hardwareMap, telemetry);
 
+		double liftPos = robot.lift.getCurrentPosition();
+
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()) {
 			telemetry.addData("Robot", "Initialized");
@@ -34,14 +36,12 @@ public class CompTeleOp extends LinearOpMode{
 			dashboard.sendTelemetryPacket(packet);
 		}
 
-		while(opModeIsActive()) {
-			if (gamepad1.left_trigger > 0.5) {
+		while(opModeIsActive()){
+			if (gamepad1.left_trigger > 0.5){
 				speedOverride = 0.25;
-			}
-			else if (gamepad1.right_trigger > 0.5) {
+			} else if (gamepad1.right_trigger > 0.5){
 				speedOverride = 0.5;
-			}
-			else {
+			} else{
 				speedOverride = 1;
 			}
 
@@ -53,13 +53,74 @@ public class CompTeleOp extends LinearOpMode{
 					)
 			);
 			robot.drive.update();
-
-			if (gamepad2.a) {
-				robot.flip.flipPosition();
+			if (gamepad1.b){
+				robot.flip.holdPosition();
 			}
-			if (gamepad2.b) {
+
+			if (gamepad1.y){
 				robot.flip.resetPosition();
 			}
+			if (gamepad1.x){
+				robot.flip.flipPosition();
+			}
+
+			if (gamepad1.dpad_right){
+				robot.arm.setArmPositionUp();
+			}
+			if (gamepad1.dpad_left){
+
+				robot.arm.setArmPositionDown();
+			}
+
+			if (gamepad2.dpad_up){
+
+				if (liftPos == robot.lift.collection){
+					robot.lift.setNextLevel(robot.lift.active);
+				}
+
+				if (liftPos == robot.lift.active){
+					robot.lift.setNextLevel(robot.lift.groundTerminal);
+				}
+
+				if (liftPos == robot.lift.groundTerminal){
+					robot.lift.setNextLevel(robot.lift.lowTerminal);
+				}
+
+				if (liftPos == robot.lift.lowTerminal){
+					robot.lift.setNextLevel(robot.lift.medTerminal);
+				}
+
+				if (liftPos == robot.lift.medTerminal){
+					robot.lift.setNextLevel(robot.lift.highTerminal);
+				}
+
+
+			}
+			if (gamepad2.dpad_down){
+				if (liftPos == robot.lift.highTerminal){
+					robot.lift.setNextLevel(robot.lift.medTerminal);
+				}
+
+				if (liftPos == robot.lift.medTerminal){
+					robot.lift.setNextLevel(robot.lift.lowTerminal);
+				}
+
+				if (liftPos == robot.lift.lowTerminal){
+					robot.lift.setNextLevel(robot.lift.groundTerminal);
+				}
+
+				if (liftPos == robot.lift.groundTerminal){
+					robot.lift.setNextLevel(robot.lift.active);
+				}
+
+				if (liftPos == robot.lift.active){
+					robot.lift.setNextLevel(robot.lift.collection);
+				}
+			}
+
+			/*if gamepad2.right_trigger {
+
+			}*/
 
 
 			poseEstimate = robot.drive.getPoseEstimate();
