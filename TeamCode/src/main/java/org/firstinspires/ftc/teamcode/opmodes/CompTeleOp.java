@@ -61,6 +61,7 @@ public class CompTeleOp extends LinearOpMode{
 				robot.flip.resetPosition();
 			}
 
+
 			poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("x", poseEstimate.getX());
 			telemetry.addData("y", poseEstimate.getY());
