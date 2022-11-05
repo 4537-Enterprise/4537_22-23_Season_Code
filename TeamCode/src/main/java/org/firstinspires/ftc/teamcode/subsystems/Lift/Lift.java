@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystems.Lift;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class Lift{
 	//identifies lift motors and controls motor movement
 
@@ -41,54 +46,87 @@ public class Lift{
 	public static double ground=0;
     public double nextLevel;
 
+	PIDEx liftPID;
+	PIDCoefficientsEx liftPIDCoefficients;
+	public static double kP = 0.5;
+	public static double kI = 0.0;
+	public static double kD = 0.0;
+	double integralSumMax = 1 / kI;
+	double stabilityThreshold = 0.0;
+	double lowPassGain = 0.0;
 
 	public Lift(HardwareMap map, Telemetry telemetry){
 		this.telemetry = telemetry;
 
-		liftMotorLeft =map.get(DcMotor.class,"liftLeft"); /*the link between the code and the physical motor*/
+		liftMotorLeft = map.get(DcMotor.class,"liftLeft"); /*the link between the code and the physical motor*/
 		liftMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-		liftMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-		liftMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		liftMotorRight =map.get(DcMotor.class,"liftRight"); /*the link between the code and the physical motor*/
+		liftMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+		liftMotorRight = map.get(DcMotor.class,"liftRight"); /*the link between the code and the physical motor*/
 		liftMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
-		liftMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-		liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		liftMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+		liftPIDCoefficients = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
+		liftPID = new PIDEx(liftPIDCoefficients);
 	}
 
-	public void test (){
-
+	public void setPower(double power){
+		liftMotorLeft.setPower(power);
+		liftMotorRight.setPower(power);
 	}
 
-	public void runToPosition(double position, double speed) {
-		// receives speed and positional target and moves motor to target
-		int newLiftTarget = (int) (position*COUNTS_PER_INCH);
-		liftMotorLeft.setTargetPosition(newLiftTarget);
-		liftMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		liftMotorLeft.setPower(speed);
-
-		liftMotorRight.setTargetPosition(newLiftTarget);
-		liftMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		liftMotorRight.setPower(speed);
-
-		while (liftMotorLeft.isBusy() || (liftMotorRight.isBusy())) {
-			telemetry.addData("Lift Motor Position: ", getCurrentPosition());
-			telemetry.update();
-		}
-
+	public void stop(){
 		liftMotorLeft.setPower(0);
-		liftMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 		liftMotorRight.setPower(0);
-		liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-	 }
+	}
 
 	public double getCurrentPosition() {
-		return liftMotorLeft.getCurrentPosition();
+		double leftValue = liftMotorLeft.getCurrentPosition();
+		double rightValue = liftMotorRight.getCurrentPosition();
+		double avgValue = (leftValue+rightValue)/2;
+		return avgValue;
 	}
 
 	public void setNextLevel(double level){
 		this.nextLevel=level;
+	}
+
+	public void updateLiftPID() {
+		liftPIDCoefficients.Kp = kP;
+		liftPIDCoefficients.Ki = kI;
+		liftPIDCoefficients.Kd = kD;
+		liftPIDCoefficients.maximumIntegralSum = integralSumMax;
+		liftPIDCoefficients.stabilityThreshold = stabilityThreshold;
+		liftPIDCoefficients.lowPassGain = lowPassGain;
+	}
+
+	public void updateHoldLevel(){
+		updateLiftPID();
+		double power = Range.clip(
+				liftPID.calculate(nextLevel, getCurrentPosition()),
+				-1,
+				1
+		);
+
+		if(power >= -0.1){
+			setPower(power);
+		} else {
+			setPower(power * 0.1);
+		}
+	}
+
+	public void updateIdle(){
+		updateLiftPID();
+		double power = Range.clip(
+				liftPID.calculate(ground, getCurrentPosition()),
+				-1,
+				1
+		);
+
+		if(power >= -0.1){
+			setPower(power);
+		} else {
+			setPower(power * 0.1);
+		}
 	}
 }
