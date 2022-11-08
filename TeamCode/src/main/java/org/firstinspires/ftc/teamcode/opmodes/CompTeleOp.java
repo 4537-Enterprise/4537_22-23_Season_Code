@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
 @TeleOp(name = "CompTeleOp")
@@ -39,6 +40,8 @@ public class CompTeleOp extends LinearOpMode{
 		robot = new CompRobot(hardwareMap, telemetry);
 
 		double liftPos = robot.lift.getCurrentPosition();
+
+		double ClawPosition = robot.claw.getPosition();
 
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()) {
@@ -131,9 +134,9 @@ public class CompTeleOp extends LinearOpMode{
 				}
 			}
 
-			if (rightTriggerReader.wasJustPressed()){
+			/*if gamepad2.right_trigger {
 
-			}
+			}*/
 
 
 			poseEstimate = robot.drive.getPoseEstimate();
