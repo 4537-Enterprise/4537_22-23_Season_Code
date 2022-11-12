@@ -9,6 +9,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.apache.commons.math3.analysis.function.Power;
 import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 import org.firstinspires.ftc.teamcode.Controls.Controller;
@@ -42,6 +44,7 @@ public class CompTeleOp extends LinearOpMode{
 		double liftPos = robot.lift.getCurrentPosition();
 
 		double ClawPosition = robot.claw.getPosition();
+
 
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()) {
@@ -89,32 +92,34 @@ public class CompTeleOp extends LinearOpMode{
 //
 //				robot.arm.setArmPositionDown();
 //			}
-
 			if (controller.liftMoveButton.wasJustPressed()){
+				//TODO: refactor this into switch-case
+				switch (liftPos){
 
-				if (liftPos == robot.lift.collection){
-					robot.lift.setNextLevel(robot.lift.active);
+					case (liftPos == robot.lift.collection){
+						robot.lift.setNextLevel(robot.lift.active);
+					}
+
+					if (liftPos == robot.lift.active){
+						robot.lift.setNextLevel(robot.lift.groundTerminal);
+					}
+
+					if (liftPos == robot.lift.groundTerminal){
+						robot.lift.setNextLevel(robot.lift.lowTerminal);
+					}
+
+					if (liftPos == robot.lift.lowTerminal){
+						robot.lift.setNextLevel(robot.lift.medTerminal);
+					}
+
+					if (liftPos == robot.lift.medTerminal){
+						robot.lift.setNextLevel(robot.lift.highTerminal);
+					}
+
 				}
-
-				if (liftPos == robot.lift.active){
-					robot.lift.setNextLevel(robot.lift.groundTerminal);
-				}
-
-				if (liftPos == robot.lift.groundTerminal){
-					robot.lift.setNextLevel(robot.lift.lowTerminal);
-				}
-
-				if (liftPos == robot.lift.lowTerminal){
-					robot.lift.setNextLevel(robot.lift.medTerminal);
-				}
-
-				if (liftPos == robot.lift.medTerminal){
-					robot.lift.setNextLevel(robot.lift.highTerminal);
-				}
-
-
 			}
 			if (controller.liftDownButton.wasJustPressed()){
+				//TODO: refactor this into switch-case
 				if (liftPos == robot.lift.highTerminal){
 					robot.lift.setNextLevel(robot.lift.medTerminal);
 				}
@@ -150,6 +155,6 @@ public class CompTeleOp extends LinearOpMode{
 			telemetry.addData("heading", poseEstimate.getHeading());
 			telemetry.update();
 		}
-
 	}
+
 }
