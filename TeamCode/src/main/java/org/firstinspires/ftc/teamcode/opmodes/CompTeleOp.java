@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 import org.firstinspires.ftc.teamcode.Controls.Controller;
+
 @TeleOp(name = "CompTeleOp")
 public class CompTeleOp extends LinearOpMode{
 	//dpad sets the pre determined heights and the right trigger executes the program
@@ -19,19 +20,22 @@ public class CompTeleOp extends LinearOpMode{
 
 	double speedOverride = 1;
 	//TODO : Implement Controller methods for lift,
-	GamepadEx gamepadEx1 = new GamepadEx(gamepad1);
-	GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
+	//GamepadEx gamepadEx1 = new GamepadEx(gamepad1);
+	//GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
 
 	Pose2d poseEstimate;
 
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
+	Controller controller;
 
 
 	@Override
-
-
 	public void runOpMode() throws InterruptedException{
+		GamepadEx gamepad1ex = new GamepadEx(gamepad1);
+		//GamepadEx gamepad2ex = new GamepadEx(gamepad2);
+		controller = new Controller(gamepad1ex);
+
 
 		robot = new CompRobot(hardwareMap, telemetry);
 
@@ -39,7 +43,6 @@ public class CompTeleOp extends LinearOpMode{
 
 		double ClawPosition = robot.claw.getPosition();
 
-		Controller controller1 = new Controller(gamepadEx1, Controller.Controllers.TestControlScheme);
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()) {
 			telemetry.addData("Robot", "Initialized");
@@ -68,11 +71,11 @@ public class CompTeleOp extends LinearOpMode{
 //					)
 		//	);
 			robot.drive.update();
-			if (controller1.flipMiddleButton.wasJustPressed()){
+			if (controller.flipMiddleButton.wasJustPressed()){
 				robot.flip.holdPosition();
 			}
 
-			if (controller1.flipDownButton.wasJustPressed()){
+			if (controller.flipDownButton.wasJustPressed()){
 				robot.flip.resetPosition();
 			}
 //			if (gamepad1.x){
@@ -87,7 +90,7 @@ public class CompTeleOp extends LinearOpMode{
 //				robot.arm.setArmPositionDown();
 //			}
 
-			if (controller1.liftMoveButton.wasJustPressed()){
+			if (controller.liftMoveButton.wasJustPressed()){
 
 				if (liftPos == robot.lift.collection){
 					robot.lift.setNextLevel(robot.lift.active);
@@ -111,7 +114,7 @@ public class CompTeleOp extends LinearOpMode{
 
 
 			}
-			if (controller1.liftDownButton.wasJustPressed()){
+			if (controller.liftDownButton.wasJustPressed()){
 				if (liftPos == robot.lift.highTerminal){
 					robot.lift.setNextLevel(robot.lift.medTerminal);
 				}
