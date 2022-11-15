@@ -47,7 +47,7 @@ public class CompTeleOp extends LinearOpMode{
 
 
 		/*Pre-Start/Post-Init Loop*/
-		while (!opModeIsActive()) {
+		while (!opModeIsActive()){
 			telemetry.addData("Robot", "Initialized");
 			packet.put("Robot", "Initialized");
 
@@ -57,7 +57,7 @@ public class CompTeleOp extends LinearOpMode{
 
 		}
 
-		while(opModeIsActive()){
+		while (opModeIsActive()){
 //			if (gamepad1.left_trigger > 0.5){
 //				speedOverride = 0.25;
 //			} else if (gamepad1.right_trigger > 0.5){
@@ -72,7 +72,7 @@ public class CompTeleOp extends LinearOpMode{
 //							-gamepad1.left_stick_x * speedOverride,
 //							-gamepad1.right_stick_x * speedOverride
 //					)
-		//	);
+			//	);
 			robot.drive.update();
 			if (controller.flipMiddleButton.wasJustPressed()){
 				robot.flip.holdPosition();
@@ -92,54 +92,62 @@ public class CompTeleOp extends LinearOpMode{
 //
 //				robot.arm.setArmPositionDown();
 //			}
-			if (controller.liftMoveButton.wasJustPressed()){
-				//TODO: refactor this into switch-case
-				switch (liftPos){
+			if (controller.liftUpButton.wasJustPressed()){
+				telemetry.addData ("Test", "fkgjofnf");
+				//TODO button isnt registering, could be that controller is not mapped, could be button code is broken,
+				// and was just pressed might not be correct.
+				switch (robot.lift.currPosition){
 
-					case (liftPos == robot.lift.collection){
+					case "ground":
 						robot.lift.setNextLevel(robot.lift.active);
-					}
+						robot.lift.currPosition = "active";
 
-					if (liftPos == robot.lift.active){
+					case "active":
 						robot.lift.setNextLevel(robot.lift.groundTerminal);
-					}
+						robot.lift.currPosition = "groundTerminal";
 
-					if (liftPos == robot.lift.groundTerminal){
+					case "groundTerminal":
 						robot.lift.setNextLevel(robot.lift.lowTerminal);
-					}
 
-					if (liftPos == robot.lift.lowTerminal){
+						robot.lift.currPosition = "lowTerminal";
+
+					case "lowTerminal":
 						robot.lift.setNextLevel(robot.lift.medTerminal);
-					}
 
-					if (liftPos == robot.lift.medTerminal){
+						robot.lift.currPosition = "medTerminal";
+
+					case "medTerminal":
 						robot.lift.setNextLevel(robot.lift.highTerminal);
-					}
+
+						robot.lift.currPosition = "highTerminal";
+
+					default:
+						continue;
 
 				}
 			}
-			if (controller.liftDownButton.wasJustPressed()){
-				//TODO: refactor this into switch-case
-				if (liftPos == robot.lift.highTerminal){
-					robot.lift.setNextLevel(robot.lift.medTerminal);
-				}
-
-				if (liftPos == robot.lift.medTerminal){
-					robot.lift.setNextLevel(robot.lift.lowTerminal);
-				}
-
-				if (liftPos == robot.lift.lowTerminal){
-					robot.lift.setNextLevel(robot.lift.groundTerminal);
-				}
-
-				if (liftPos == robot.lift.groundTerminal){
-					robot.lift.setNextLevel(robot.lift.active);
-				}
-
-				if (liftPos == robot.lift.active){
-					robot.lift.setNextLevel(robot.lift.collection);
-				}
-			}
+//			if (controller.liftDownButton.wasJustPressed()){
+//				//TODO: refactor this into switch-case
+//				if (liftPos == robot.lift.highTerminal){
+//					robot.lift.setNextLevel(robot.lift.medTerminal);
+//				}
+//
+//				if (liftPos == robot.lift.medTerminal){
+//					robot.lift.setNextLevel(robot.lift.lowTerminal);
+//				}
+//
+//				if (liftPos == robot.lift.lowTerminal){
+//					robot.lift.setNextLevel(robot.lift.groundTerminal);
+//				}
+//
+//				if (liftPos == robot.lift.groundTerminal){
+//					robot.lift.setNextLevel(robot.lift.active);
+//				}
+//
+//				if (liftPos == robot.lift.active){
+//					robot.lift.setNextLevel(robot.lift.collection);
+//				}
+			//	}
 
 
 			/*if gamepad2.right_trigger {
@@ -148,7 +156,7 @@ public class CompTeleOp extends LinearOpMode{
 
 
 			poseEstimate = robot.drive.getPoseEstimate();
-			telemetry.addData("liftPos", robot.lift.nextLevel);
+			telemetry.addData("liftNextPos", robot.lift.currPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.getCurrentPosition());
 			telemetry.addData("x", poseEstimate.getX());
 			telemetry.addData("y", poseEstimate.getY());
@@ -156,5 +164,6 @@ public class CompTeleOp extends LinearOpMode{
 			telemetry.update();
 		}
 	}
-
 }
+
+

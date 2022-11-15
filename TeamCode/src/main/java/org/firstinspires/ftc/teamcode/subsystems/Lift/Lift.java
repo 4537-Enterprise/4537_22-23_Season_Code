@@ -42,9 +42,10 @@ public class Lift{
 	public static double lowTerminal=50;
 	public static double groundTerminal=25;
 	public static double active=15;
-	public static double collection=0;
 	public static double ground=0;
     public double nextLevel;
+
+	public String currPosition = "active";
 
 	PIDEx liftPID;
 	PIDCoefficientsEx liftPIDCoefficients;
