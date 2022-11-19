@@ -17,15 +17,12 @@ import org.firstinspires.ftc.teamcode.Controls.Controller;
 
 @TeleOp(name = "CompTeleOp")
 public class CompTeleOp extends LinearOpMode{
-	//dpad sets the pre determined heights and the right trigger executes the program
 	CompRobot robot;
 
 	double speedOverride = 1;
 	//TODO : Implement Controller methods for lift,
-	//GamepadEx gamepadEx1 = new GamepadEx(gamepad1);
-	//GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
 
-	Pose2d poseEstimate;
+	//Pose2d poseEstimate;
 
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -35,17 +32,14 @@ public class CompTeleOp extends LinearOpMode{
 	@Override
 	public void runOpMode() throws InterruptedException{
 		GamepadEx gamepad1ex = new GamepadEx(gamepad1);
-		//GamepadEx gamepad2ex = new GamepadEx(gamepad2);
 		controller = new Controller(gamepad1ex);
-
 
 		robot = new CompRobot(hardwareMap, telemetry);
 
-		double liftPos = robot.lift.getCurrentPosition();
-
-		double ClawPosition = robot.claw.getPosition();
-
-
+		// Move lift to active position
+		robot.lift.setNextLevel(robot.lift.active);
+		robot.lift.moveLift();
+		//double ClawPosition = robot.claw.getPosition();
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()){
 			telemetry.addData("Robot", "Initialized");
@@ -53,114 +47,38 @@ public class CompTeleOp extends LinearOpMode{
 
 			telemetry.update();
 			dashboard.sendTelemetryPacket(packet);
-
-
 		}
 
 		while (opModeIsActive()){
-//			if (gamepad1.left_trigger > 0.5){
-//				speedOverride = 0.25;
-//			} else if (gamepad1.right_trigger > 0.5){
-//				speedOverride = 0.5;
-//			} else{
-//				speedOverride = 1;
-//			}
-//
-//			robot.drive.setWeightedDrivePower(
-//					new Pose2d(
-//							-gamepad1.left_stick_y * speedOverride,
-//							-gamepad1.left_stick_x * speedOverride,
-//							-gamepad1.right_stick_x * speedOverride
-//					)
-			//	);
-			robot.drive.update();
-			if (controller.flipMiddleButton.wasJustPressed()){
-				robot.flip.holdPosition();
-			}
 
-			if (controller.flipDownButton.wasJustPressed()){
-				robot.flip.resetPosition();
-			}
-//			if (gamepad1.x){
-//				robot.flip.flipPosition();
+			//robot.drive.update();
+//			if (controller.flipMiddleButton.wasJustPressed()){
+//				robot.flip.holdPosition();
 //			}
 //
-//			if (gamepad1.dpad_right){
-//				robot.arm.setArmPositionUp();
+//			if (controller.flipDownButton.wasJustPressed()){
+//				robot.flip.resetPosition();
 //			}
-//			if (gamepad1.dpad_left){
-//
-//				robot.arm.setArmPositionDown();
-//			}
+
 			if (controller.liftUpButton.wasJustPressed()){
-				telemetry.addData ("Test", "fkgjofnf");
-				//TODO button isnt registering, could be that controller is not mapped, could be button code is broken,
-				// and was just pressed might not be correct.
-				switch (robot.lift.currPosition){
-
-					case "ground":
-						robot.lift.setNextLevel(robot.lift.active);
-						robot.lift.currPosition = "active";
-
-					case "active":
-						robot.lift.setNextLevel(robot.lift.groundTerminal);
-						robot.lift.currPosition = "groundTerminal";
-
-					case "groundTerminal":
-						robot.lift.setNextLevel(robot.lift.lowTerminal);
-
-						robot.lift.currPosition = "lowTerminal";
-
-					case "lowTerminal":
-						robot.lift.setNextLevel(robot.lift.medTerminal);
-
-						robot.lift.currPosition = "medTerminal";
-
-					case "medTerminal":
-						robot.lift.setNextLevel(robot.lift.highTerminal);
-
-						robot.lift.currPosition = "highTerminal";
-
-					default:
-						continue;
-
-				}
+				robot.lift.moveUpOneLevel();
 			}
-//			if (controller.liftDownButton.wasJustPressed()){
-//				//TODO: refactor this into switch-case
-//				if (liftPos == robot.lift.highTerminal){
-//					robot.lift.setNextLevel(robot.lift.medTerminal);
-//				}
-//
-//				if (liftPos == robot.lift.medTerminal){
-//					robot.lift.setNextLevel(robot.lift.lowTerminal);
-//				}
-//
-//				if (liftPos == robot.lift.lowTerminal){
-//					robot.lift.setNextLevel(robot.lift.groundTerminal);
-//				}
-//
-//				if (liftPos == robot.lift.groundTerminal){
-//					robot.lift.setNextLevel(robot.lift.active);
-//				}
-//
-//				if (liftPos == robot.lift.active){
-//					robot.lift.setNextLevel(robot.lift.collection);
-//				}
-			//	}
 
+			if(controller.liftDownButton.wasJustPressed()){
+				robot.lift.moveDownOneLevel();
+			}
 
-			/*if gamepad2.right_trigger {
+			if(controller.liftMoveButton.wasJustPressed()) {
+				robot.lift.moveLift();
+			}
 
-			}*/
-
-
-			poseEstimate = robot.drive.getPoseEstimate();
-			telemetry.addData("liftNextPos", robot.lift.currPosition);
-			telemetry.addData("liftCurrentPos", robot.lift.getCurrentPosition());
-			telemetry.addData("x", poseEstimate.getX());
-			telemetry.addData("y", poseEstimate.getY());
-			telemetry.addData("heading", poseEstimate.getHeading());
+			controller.readButtons();
+//			poseEstimate = robot.drive.getPoseEstimate();
+			telemetry.addData("liftNextPos", robot.lift.nextPosition);
+			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
+//			telemetry.addData("x", poseEstimate.getX());
+//			telemetry.addData("y", poseEstimate.getY());
+//			telemetry.addData("heading", poseEstimate.getHeading());
 			telemetry.update();
 		}
 	}

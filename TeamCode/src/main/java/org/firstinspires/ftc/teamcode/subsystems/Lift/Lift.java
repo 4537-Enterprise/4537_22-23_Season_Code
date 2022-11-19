@@ -9,43 +9,36 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import java.lang.Math;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
 public class Lift{
 	//identifies lift motors and controls motor movement
-
-	//highTerminal
-	//medTerminal
-	//lowTerminal
-	//goundTerminal
-	//active
-	//collection
-	//ground
-	//ground and collection are interchangeable with the same value
-
 	Telemetry telemetry;
 
-	public DcMotor liftMotorLeft;
-	public DcMotor liftMotorRight;
+	public DcMotor liftMotor;
 
 	//these constants define how many rotations are in an inch
 	static final double COUNTS_PER_MOTOR_REV = 28;
 	static final double DRIVE_GEAR_REDUCTION = 1.0;
 	static final double WHEEL_DIAMETER_INCHES = 2.0;
-	static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-
+	// Hard-coded for now
+	static final int COUNTS_PER_INCH = 420;
+//	static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
 	//these constants define the different heights the lift will be
-	public static double highTerminal=100;
-	public static double medTerminal=75;
-	public static double lowTerminal=50;
-	public static double groundTerminal=25;
-	public static double active=15;
-	public static double ground=0;
-    public double nextLevel;
+	public static final int highTerminal=14;
+	public static final int medTerminal=8;
+	public static final int lowTerminal=4;
+	public static final int groundTerminal=2;
+	public static final int active=1;
+	public static final int ground=0;
+    public int nextLevel = (int)getCurrentPosition();
 
-	public String currPosition = "active";
+	public String currPosition;
+	public String nextPosition = currPosition;
 
 	PIDEx liftPID;
 	PIDCoefficientsEx liftPIDCoefficients;
@@ -59,37 +52,106 @@ public class Lift{
 	public Lift(HardwareMap map, Telemetry telemetry){
 		this.telemetry = telemetry;
 
-		liftMotorLeft = map.get(DcMotor.class,"liftLeft"); /*the link between the code and the physical motor*/
-		liftMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-		liftMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-		liftMotorRight = map.get(DcMotor.class,"liftRight"); /*the link between the code and the physical motor*/
-		liftMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
-		liftMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		liftMotor = map.get(DcMotor.class,"liftMotor"); /*the link between the code and the physical motor*/
+		liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+		liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 		liftPIDCoefficients = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
 		liftPID = new PIDEx(liftPIDCoefficients);
 	}
 
+	public void moveUpOneLevel() {
+		switch(this.nextLevel) {
+			case ground:
+				this.setNextLevel(this.active);
+				this.nextPosition = "active";
+				break;
+			case active:
+				this.setNextLevel(this.groundTerminal);
+				this.nextPosition = "groundTerminal";
+				break;
+			case groundTerminal:
+				this.setNextLevel(this.lowTerminal);
+				this.nextPosition = "lowTerminal";
+				break;
+			case lowTerminal:
+				this.setNextLevel(this.medTerminal);
+				this.nextPosition = "medTerminal";
+				break;
+			case medTerminal:
+				this.setNextLevel(this.highTerminal);
+				this.nextPosition = "highTerminal";
+				break;
+		}
+	}
+
+	public void moveDownOneLevel() {
+		switch(this.nextLevel) {
+			case active:
+				this.setNextLevel(this.ground);
+				this.nextPosition = "ground";
+				break;
+			case groundTerminal:
+				this.setNextLevel(this.active);
+				this.nextPosition = "active";
+				break;
+			case lowTerminal:
+				this.setNextLevel(this.groundTerminal);
+				this.nextPosition = "groundTerminal";
+				break;
+			case medTerminal:
+				this.setNextLevel(this.lowTerminal);
+				this.nextPosition = "lowTerminal";
+				break;
+			case highTerminal:
+				this.setNextLevel(medTerminal);
+				this.nextPosition = "medTerminal";
+				break;
+		}
+	}
+
 	public void setPower(double power){
-		liftMotorLeft.setPower(power);
-		liftMotorRight.setPower(power);
+		liftMotor.setPower(power);
 	}
 
 	public void stop(){
-		liftMotorLeft.setPower(0);
-		liftMotorRight.setPower(0);
+		liftMotor.setPower(0);
+	}
+
+	public void setNextLevel(int level){
+		this.nextLevel=level;
 	}
 
 	public double getCurrentPosition() {
-		double leftValue = liftMotorLeft.getCurrentPosition();
-		double rightValue = liftMotorRight.getCurrentPosition();
-		double avgValue = (leftValue+rightValue)/2;
-		return avgValue;
+		double currentPosition = this.liftMotor.getCurrentPosition();
+		this.currPosition = getPositionString((int) currentPosition);
+		return currentPosition;
 	}
 
-	public void setNextLevel(double level){
-		this.nextLevel=level;
+	private String getPositionString(int position) {
+		switch(position) {
+			case highTerminal:
+				return "highTerminal";
+			case medTerminal:
+				return "medTerminal";
+			case lowTerminal:
+				return "lowTerminal";
+			case groundTerminal:
+				return "groundTerminal";
+			case active:
+				return "active";
+			case ground:
+				return "ground";
+			default:
+				return "unknown position";
+		}
+	}
+
+	public void moveLift() {
+		this.setPower(.2);
+		liftMotor.setTargetPosition(this.nextLevel * COUNTS_PER_INCH);
+		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		this.currPosition = this.nextPosition;
 	}
 
 	public void updateLiftPID() {
