@@ -35,7 +35,9 @@ public class Lift{
 	public static final int groundTerminal=2;
 	public static final int active=1;
 	public static final int ground=0;
-    public int nextLevel = (int)getCurrentPosition();
+	//TODO: This causes a null pointer error and I'm too dumb to figure it out - get DK to fix it :(
+    //public int nextLevel = (int)getCurrentPosition();
+	public int nextLevel = 0;
 
 	public String currPosition;
 	public String nextPosition = currPosition;

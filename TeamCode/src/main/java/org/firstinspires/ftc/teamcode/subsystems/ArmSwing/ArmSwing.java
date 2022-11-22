@@ -14,11 +14,11 @@ public class ArmSwing{
 	public DcMotor Arm;
 //one rotation = 288 ticks
 	public static double armUpPosition = 80;
-	public static double armUpMax= 100;
+	public static double armUpMax= 42;
 	public static double armDownPosition = -80;
-	public static double armDownMax= -100;
+	public static double armDownMax= -42;
     public static double speed = 1;
-	public static boolean isArmUp = false;
+	public boolean isArmUp = false;
 	public ArmSwing(HardwareMap map){
 
 		Arm = map.get(DcMotor.class, "arm"); /*the link between the code and the physical motor*/
@@ -40,7 +40,7 @@ public class ArmSwing{
 
 			Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-			while (Arm.getCurrentPosition()<armUpMax){
+			while (Arm.getCurrentPosition()<=armUpMax){
 
 				Arm.setPower(speed);
 			}
@@ -48,6 +48,7 @@ public class ArmSwing{
 		}
 	}
 	public void setArmPositionDown(){
+		//TODO: figure out why the backwards motion does not have enough power. 
 
 		if (isArmUp == true){
 
@@ -60,7 +61,7 @@ public class ArmSwing{
 
 			Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-			while (Arm.getCurrentPosition()>armDownMax){
+			while (Arm.getCurrentPosition()>=armDownMax){
 
 				Arm.setPower(-speed);
 			}
