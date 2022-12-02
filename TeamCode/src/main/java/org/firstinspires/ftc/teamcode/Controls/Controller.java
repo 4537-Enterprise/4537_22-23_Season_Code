@@ -25,6 +25,7 @@ public class Controller{
 		public ButtonReader swingFrontButton; //D-Pad Left
 		public ButtonReader swingBackButton; //D-Pad Right
 		public ButtonReader liftMoveButton; //  right trigger
+		public ButtonReader EmergancyClose;
 
 		// TODO: Make constructor take second parameter ControlScheme
 		public Controller(GamepadEx gamepadEx1){
@@ -56,6 +57,9 @@ public class Controller{
 
 			liftMoveButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.RIGHT_BUMPER );
 			this.buttons.add(this.liftMoveButton);
+
+			EmergancyClose = new ButtonReader (gamepadEx1, GamepadKeys.Button.LEFT_BUMPER);
+			this.buttons.add(this.EmergancyClose);
 		}
 
 		//TODO: Make a function that takes in a gamepadEx and maps the buttons to pre-named buttonreaders

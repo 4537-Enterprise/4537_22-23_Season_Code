@@ -26,10 +26,10 @@ public class CompRobot{
 	public CompRobot(HardwareMap map, Telemetry telemetry) {
 		this.telemetry = telemetry;
 
-    	//drive = new CompMecanumDrive(map);
-		//flip = new Flipper(map);
-		//arm = new ArmSwing(map);
-		//lift = new Lift(map, telemetry);
+    	drive = new CompMecanumDrive(map);
+		flip = new Flipper(map);
+		arm = new ArmSwing(map);
+		lift = new Lift(map, telemetry);
     	claw = new Claw(map);
 		telemetry.addData("Robot", "Initialized");
 		telemetry.update();

@@ -36,10 +36,10 @@ public class CompTeleOp extends LinearOpMode{
 
 		robot = new CompRobot(hardwareMap, telemetry);
 
-		// Move lift to active position
+		//Move lift to active position
 		robot.lift.setNextLevel(robot.lift.active);
 		robot.lift.moveLift();
-		//double ClawPosition = robot.claw.getPosition();
+		double ClawPosition = robot.claw.getPosition();
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()){
 			telemetry.addData("Robot", "Initialized");
@@ -51,14 +51,14 @@ public class CompTeleOp extends LinearOpMode{
 
 		while (opModeIsActive()){
 
-			//robot.drive.update();
-//			if (controller.flipMiddleButton.wasJustPressed()){
-//				robot.flip.holdPosition();
-//			}
-//
-//			if (controller.flipDownButton.wasJustPressed()){
-//				robot.flip.resetPosition();
-//			}
+			robot.drive.update();
+			if (controller.flipMiddleButton.wasJustPressed()){
+				robot.flip.holdPosition();
+			}
+
+			if (controller.flipDownButton.wasJustPressed()){
+				robot.flip.resetPosition();
+			}
 
 			if (controller.liftUpButton.wasJustPressed()){
 				robot.lift.moveUpOneLevel();
@@ -78,20 +78,23 @@ public class CompTeleOp extends LinearOpMode{
 				robot.arm.setArmPositionDown();
 			}
 			if (controller.clawButton.wasJustPressed()) {
+				robot.claw.OpenPosition();
+			}
+			if (controller.EmergancyClose.wasJustPressed()){
 				robot.claw.ClosePosition();
 			}
 
 
 
 			controller.readButtons();
-//			poseEstimate = robot.drive.getPoseEstimate();
+			//poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
 			telemetry.addData ("is arm up", robot.arm.isArmUp);
 			telemetry.addData ("Arm Position", robot.arm.CurrPosition);
-//			telemetry.addData("x", poseEstimate.getX());
-//			telemetry.addData("y", poseEstimate.getY());
-//			telemetry.addData("heading", poseEstimate.getHeading());
+			//telemetry.addData("x", poseEstimate.getX());
+			//telemetry.addData("y", poseEstimate.getY());
+			//telemetry.addData("heading", poseEstimate.getHeading());
 			telemetry.update();
 		}
 
