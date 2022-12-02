@@ -76,19 +76,26 @@ public class CompTeleOp extends LinearOpMode{
 			}
 			if (controller.swingBackButton.wasJustPressed ()) {
 				robot.arm.setArmPositionDown();
-
 			}
+			if (controller.clawButton.wasJustPressed()) {
+				robot.claw.ClosePosition();
+			}
+
+
 
 			controller.readButtons();
 //			poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
 			telemetry.addData ("is arm up", robot.arm.isArmUp);
+			telemetry.addData ("Arm Position", robot.arm.CurrPosition);
 //			telemetry.addData("x", poseEstimate.getX());
 //			telemetry.addData("y", poseEstimate.getY());
 //			telemetry.addData("heading", poseEstimate.getHeading());
 			telemetry.update();
 		}
+
+
 	}
 }
 
