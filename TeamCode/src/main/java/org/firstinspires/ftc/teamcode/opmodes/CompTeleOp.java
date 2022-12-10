@@ -20,7 +20,9 @@ public class CompTeleOp extends LinearOpMode{
 	CompRobot robot;
 
 	double speedOverride = 1;
-	//TODO : Implement Controller methods for lift,
+
+	
+	//TODO: Tell engineers to replace expansion hub on top,
 
 	//Pose2d poseEstimate;
 
@@ -39,6 +41,7 @@ public class CompTeleOp extends LinearOpMode{
 		//Move lift to active position
 		robot.lift.setNextLevel(robot.lift.active);
 		robot.lift.moveLift();
+
 		double ClawPosition = robot.claw.getPosition();
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()){
@@ -51,7 +54,27 @@ public class CompTeleOp extends LinearOpMode{
 
 		while (opModeIsActive()){
 
+			if (gamepad1.left_trigger > 0.5) {
+				speedOverride = 0.25;
+			}
+
+			else if (gamepad1.right_trigger > 0.5) {
+				speedOverride = 0.5;
+			}
+			else {
+				speedOverride = 1;
+			}
+
+
+			robot.drive.setWeightedDrivePower(
+					new Pose2d(
+							-gamepad1.left_stick_y * speedOverride,
+							-gamepad1.left_stick_x * speedOverride,
+							-gamepad1.right_stick_x * speedOverride
+					)
+			);
 			robot.drive.update();
+			//	robot.drive.update();
 			if (controller.flipMiddleButton.wasJustPressed()){
 				robot.flip.holdPosition();
 			}
@@ -82,12 +105,15 @@ public class CompTeleOp extends LinearOpMode{
 			}
 			if (controller.EmergancyClose.wasJustPressed()){
 				robot.claw.ClosePosition();
+
 			}
+
 
 
 
 			controller.readButtons();
 			//poseEstimate = robot.drive.getPoseEstimate();
+			telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
 			telemetry.addData ("is arm up", robot.arm.isArmUp);

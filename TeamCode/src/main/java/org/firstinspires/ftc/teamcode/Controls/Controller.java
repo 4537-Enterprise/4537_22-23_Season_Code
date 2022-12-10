@@ -25,7 +25,7 @@ public class Controller{
 		public ButtonReader swingFrontButton; //D-Pad Left
 		public ButtonReader swingBackButton; //D-Pad Right
 		public ButtonReader liftMoveButton; //  right trigger
-		public ButtonReader EmergancyClose;
+		public ButtonReader EmergancyClose; // Left trigger
 
 		// TODO: Make constructor take second parameter ControlScheme
 		public Controller(GamepadEx gamepadEx1){

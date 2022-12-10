@@ -34,17 +34,17 @@ public class ArmSwing{
 	public void setArmPositionUp(){
 		this.CurrPosition = this.CurrPosition + 5;
 			int newLiftTarget = (int) (armUpPosition);
-		//	Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+		    Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 			Arm.setTargetPosition((int)this.CurrPosition);
 			Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 			isArmUp = true;
 
 	}
 	public void setArmPositionDown(){
-		//TODO: figure out why the backwards motion does not have enough power.
+		//TODO: figure out why the backwards motion does n  ot have enough power.
 		this.CurrPosition = this.CurrPosition - 5;
 			int newLiftTarget = ((int)this.CurrPosition);
-			//Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+			Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 			Arm.setTargetPosition(newLiftTarget);
 			Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
