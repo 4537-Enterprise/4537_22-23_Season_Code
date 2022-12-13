@@ -34,9 +34,8 @@ public class Claw{
     }
 
     public void ClosePosition(){
-        if (ClawSensor.isPressed()){
+        //if (ClawSensor.isPressed()){
             Claw.setPosition(CLOSE_POSITION);
 
         }
     }
-}

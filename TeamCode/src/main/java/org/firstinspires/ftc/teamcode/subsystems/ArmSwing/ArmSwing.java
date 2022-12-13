@@ -12,11 +12,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ArmSwing{
 
 	public DcMotor Arm;
+	// TODO add telemetry for the arm to measure the max of the robot
 //one rotation = 288 ticks
 	public static double armUpPosition = 5;
-	public static double armUpMax= 42;
+	public static double armUpMax= 100;
 	public static double armDownPosition = -5;
-	public static double armDownMax= -42;
+	public static double armDownMax= -100;
     public static double speed = 1;
 	//TODO delete later
 	public static double CurrPosition;
@@ -32,18 +33,18 @@ public class ArmSwing{
 
 
 	public void setArmPositionUp(){
-		this.CurrPosition = this.CurrPosition + 5;
-			int newLiftTarget = (int) (armUpPosition);
+		this.CurrPosition = this.CurrPosition;
+			//int newLiftTarget = (int) (armUpPosition);
 		    Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-			Arm.setTargetPosition((int)this.CurrPosition);
+			Arm.setTargetPosition((int)armUpMax);
 			Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 			isArmUp = true;
 
 	}
 	public void setArmPositionDown(){
 		//TODO: figure out why the backwards motion does n  ot have enough power.
-		this.CurrPosition = this.CurrPosition - 5;
-			int newLiftTarget = ((int)this.CurrPosition);
+		this.CurrPosition = this.CurrPosition;
+			int newLiftTarget = ((int)armDownMax);
 			Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 			Arm.setTargetPosition(newLiftTarget);
 			Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
