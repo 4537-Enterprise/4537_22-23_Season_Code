@@ -28,14 +28,13 @@ public class CompTeleOp extends LinearOpMode{
 
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
-	Controller controller;
-
-
+	Controller payloadController;
+	
 	@Override
 	public void runOpMode() throws InterruptedException{
-		GamepadEx gamepad1ex = new GamepadEx(gamepad1);
-		controller = new Controller(gamepad1ex);
-
+		GamepadEx payloadcontrollerEx = new GamepadEx(gamepad2);
+		//GamepadEx driverController = new GamepadEx(gamepad1);
+		payloadController = new Controller (payloadcontrollerEx);
 		robot = new CompRobot(hardwareMap, telemetry);
 
 		//Move lift to active position
@@ -75,43 +74,40 @@ public class CompTeleOp extends LinearOpMode{
 			);
 			robot.drive.update();
 			//	robot.drive.update();
-			if (controller.flipMiddleButton.wasJustPressed()){
+			if (payloadController.flipMiddleButton.wasJustPressed()){
 				robot.flip.holdPosition();
 			}
 
-			if (controller.flipDownButton.wasJustPressed()){
+			if (payloadController.flipDownButton.wasJustPressed()){
 				robot.flip.resetPosition();
 			}
 
-			if (controller.liftUpButton.wasJustPressed()){
+			if (payloadController.liftUpButton.wasJustPressed()){
 				robot.lift.moveUpOneLevel();
 			}
 
-			if(controller.liftDownButton.wasJustPressed()){
+			if(payloadController.liftDownButton.wasJustPressed()){
 				robot.lift.moveDownOneLevel();
 			}
 
-			if(controller.liftMoveButton.wasJustPressed()) {
+			if(payloadController.liftMoveButton.wasJustPressed()) {
 				robot.lift.moveLift();
 			}
-			if(controller.swingFrontButton.wasJustPressed()) {
+			if(payloadController.swingFrontButton.wasJustPressed()) {
 				robot.arm.setArmPositionUp();
 			}
-			if (controller.swingBackButton.wasJustPressed ()) {
+			if (payloadController.swingBackButton.wasJustPressed ()) {
 				robot.arm.setArmPositionDown();
 			}
-			if (controller.clawButton.wasJustPressed()) {
+			if (payloadController.clawButton.wasJustPressed()) {
 				robot.claw.OpenPosition();
 			}
-			if (controller.EmergancyClose.wasJustPressed()){
+			if (payloadController.EmergancyClose.wasJustPressed()){
 				robot.claw.ClosePosition();
 
 			}
 
-
-
-
-			controller.readButtons();
+			payloadController.readButtons();
 			//poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);

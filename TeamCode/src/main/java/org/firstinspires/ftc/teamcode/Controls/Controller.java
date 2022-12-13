@@ -15,7 +15,6 @@ public class Controller{
 		}
       ArrayList<ButtonReader> buttons = new ArrayList<ButtonReader>();
 
-		//TODO: figure out left trigger
 		public ButtonReader clawButton; // button A
 		public ButtonReader flipUpButton; // button B
 	    public ButtonReader flipDownButton; //button X
@@ -27,7 +26,7 @@ public class Controller{
 		public ButtonReader liftMoveButton; //  right trigger
 		public ButtonReader EmergancyClose; // Left trigger
 
-		// TODO: Make constructor take second parameter ControlScheme
+		//TODO: Make constructor take second parameter ControlScheme
 		public Controller(GamepadEx gamepadEx1){
 			// TODO: Implement switch case to switch on ControlScheme. If ControlScheme1, run mapControlScheme1. If ControlScheme2, run mapControlScheme2
 			// TODO: Move this to a function
