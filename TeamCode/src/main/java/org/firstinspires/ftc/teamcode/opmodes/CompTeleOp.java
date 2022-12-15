@@ -40,6 +40,8 @@ public class CompTeleOp extends LinearOpMode{
 		//Move lift to active position
 		robot.lift.setNextLevel(robot.lift.active);
 		robot.lift.moveLift();
+		//Move Arm to specified location
+		robot.arm.setArmPositionInitilize();
 
 		double ClawPosition = robot.claw.getPosition();
 		/*Pre-Start/Post-Init Loop*/
@@ -113,11 +115,12 @@ public class CompTeleOp extends LinearOpMode{
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
 			telemetry.addData ("is arm up", robot.arm.isArmUp);
-			telemetry.addData ("Arm Position", robot.arm.CurrPosition);
+			telemetry.addData ("Arm Position", robot.arm.Arm.getCurrentPosition());
 			//telemetry.addData("x", poseEstimate.getX());
 			//telemetry.addData("y", poseEstimate.getY());
 			//telemetry.addData("heading", poseEstimate.getHeading());
 			telemetry.update();
+			FtcDashboard.getInstance().getTelemetry().addData("Arm Position", robot.arm.Arm.getCurrentPosition());
 		}
 
 
