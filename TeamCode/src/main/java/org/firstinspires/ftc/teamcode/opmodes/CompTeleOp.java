@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.apache.commons.math3.analysis.function.Power;
 import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
@@ -108,9 +109,18 @@ public class CompTeleOp extends LinearOpMode{
 			if (payloadController.armPickUpButton.wasJustPressed()){
 				robot.arm.setArmPickUp();
 			}
-//			if (robot.claw.isClawOpen == false) {
-//				robot.claw.ClosePosition();
-//			}
+			if (gamepad2.left_stick_y >= 0.5){
+				robot.arm.moveArmDownManual();
+			}
+			if (gamepad2.left_stick_y <= -0.5){
+				robot.arm.moveArmUpManual();
+			}
+			if (gamepad2.right_stick_y >= 0.5){
+				robot.lift.moveLiftDownManual();
+			}
+			if (gamepad2.right_stick_y <= -0.5){
+				robot.lift.moveLiftUpManual();
+			}
 			payloadController.readButtons();
 			//poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());

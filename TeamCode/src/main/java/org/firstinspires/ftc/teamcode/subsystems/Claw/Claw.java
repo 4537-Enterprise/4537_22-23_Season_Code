@@ -19,6 +19,7 @@ public class Claw{
         ClawSensor = map.get(TouchSensor.class, "clawSensor");
         Claw = map.get(Servo.class, "claw"); /*the link between the code and    private Servo Claw;
     /*the link between the code and the physical motor*/
+
     }
 
 

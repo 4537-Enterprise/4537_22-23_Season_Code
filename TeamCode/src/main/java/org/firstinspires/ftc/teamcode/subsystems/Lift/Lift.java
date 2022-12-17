@@ -39,6 +39,7 @@ public class Lift{
 
 	public String currPosition;
 	public String nextPosition = currPosition;
+	public double liftPower = 0.5;
 
 	PIDEx liftPID;
 	PIDCoefficientsEx liftPIDCoefficients;
@@ -51,13 +52,13 @@ public class Lift{
 
 	public Lift(HardwareMap map, Telemetry telemetry){
 		this.telemetry = telemetry;
-
 		liftMotor = map.get(DcMotor.class, "liftMotor"); /*the link between the code and the physical motor*/
 		liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 		liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		liftPIDCoefficients = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
 		liftPID = new PIDEx(liftPIDCoefficients);
 		this.nextLevel = (int) getCurrentPosition();
+		liftMotor.setPower(liftPower);
 	}
 	public void moveUpOneLevel() {
 		switch(this.nextLevel) {
@@ -147,10 +148,26 @@ public class Lift{
 	}
 
 	public void moveLift() {
-		this.setPower(.2);
+		liftMotor.setPower(liftPower);
+		this.setPower(liftPower);
 		liftMotor.setTargetPosition(this.nextLevel * COUNTS_PER_INCH);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		this.currPosition = this.nextPosition;
+	}
+
+	public void moveLiftUpManual(){
+		liftMotor.setPower(liftPower);
+		this.setPower(liftPower);
+		int newTarget = liftMotor.getCurrentPosition() + 20;
+		liftMotor.setTargetPosition(newTarget);
+		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	}
+
+	public void moveLiftDownManual(){
+		this.setPower(liftPower);
+		int newTarget = liftMotor.getCurrentPosition() - 20;
+		liftMotor.setTargetPosition(newTarget);
+		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
 	public void updateLiftPID() {

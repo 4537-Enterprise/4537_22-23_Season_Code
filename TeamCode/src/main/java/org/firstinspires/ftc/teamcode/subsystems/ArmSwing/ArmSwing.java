@@ -20,13 +20,13 @@ public class ArmSwing{
 //one rotation = 288 ticks
 	public static double armUpPosition = 5;
 	//true up max value is 225
-	public static double armUpMax= 310;
-	public static double armInit = 60;
+	public static double armUpMax= 330;
+	public static double armInit = 45;
 	public static double armDownPosition = -5;
 	//true down max value is -1000
-	public static double armDownMax= -720;
-    public static double speed = 1;
-	public static double armPickUpPosition = 60;
+	public static double armDownMax= -750;
+    public static double speed = 1.0;
+	public static double armPickUpPosition = 45;
 
 	PIDEx armPID;
 	PIDCoefficientsEx armPIDCoefficients;
@@ -85,6 +85,18 @@ public class ArmSwing{
 		this.CurrPosition = this.CurrPosition;
 		int newLiftTarget = ((int)armInit);
 		Arm.setTargetPosition(newLiftTarget);
+		Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	}
+
+	public void moveArmUpManual(){
+		int newTarget = Arm.getCurrentPosition() + 20;
+		Arm.setTargetPosition(newTarget);
+		Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	}
+
+	public void moveArmDownManual(){
+		int newTarget = Arm.getCurrentPosition() - 20;
+		Arm.setTargetPosition(newTarget);
 		Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
