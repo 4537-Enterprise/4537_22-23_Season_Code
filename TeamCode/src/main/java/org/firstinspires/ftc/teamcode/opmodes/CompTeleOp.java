@@ -55,14 +55,11 @@ public class CompTeleOp extends LinearOpMode{
 
 		while (opModeIsActive()){
 
-			if (gamepad1.left_trigger > 0.5) {
+			if (gamepad1.left_trigger > 0.5){
 				speedOverride = 0.25;
-			}
-
-			else if (gamepad1.right_trigger > 0.5) {
+			} else if (gamepad1.right_trigger > 0.5){
 				speedOverride = 0.5;
-			}
-			else {
+			} else{
 				speedOverride = 1;
 			}
 
@@ -76,9 +73,9 @@ public class CompTeleOp extends LinearOpMode{
 			);
 			robot.drive.update();
 			//	robot.drive.update();
-			if (payloadController.flipMiddleButton.wasJustPressed()){
-				robot.flip.holdPosition();
-			}
+			//if (payloadController.flipMiddleButton.wasJustPressed()){
+			//	robot.flip.holdPosition();
+		//	}
 
 			if (payloadController.flipDownButton.wasJustPressed()){
 				robot.flip.resetPosition();
@@ -88,27 +85,32 @@ public class CompTeleOp extends LinearOpMode{
 				robot.lift.moveUpOneLevel();
 			}
 
-			if(payloadController.liftDownButton.wasJustPressed()){
+			if (payloadController.liftDownButton.wasJustPressed()){
 				robot.lift.moveDownOneLevel();
 			}
 
-			if(payloadController.liftMoveButton.wasJustPressed()) {
+			if (payloadController.liftMoveButton.wasJustPressed()){
 				robot.lift.moveLift();
 			}
-			if(payloadController.swingFrontButton.wasJustPressed()) {
+			if (payloadController.swingFrontButton.wasJustPressed()&& robot.lift.currPosition == "highTerminal"){
 				robot.arm.setArmPositionUp();
 			}
-			if (payloadController.swingBackButton.wasJustPressed ()) {
+			if (payloadController.swingBackButton.wasJustPressed() && robot.lift.currPosition == "highTerminal"){
 				robot.arm.setArmPositionDown();
 			}
-			if (payloadController.clawButton.wasJustPressed()) {
+			if (payloadController.clawButton.wasJustPressed()){
 				robot.claw.OpenPosition();
 			}
 			if (payloadController.EmergancyClose.wasJustPressed()){
 				robot.claw.ClosePosition();
 
 			}
-
+			if (payloadController.armPickUpButton.wasJustPressed()){
+				robot.arm.setArmPickUp();
+			}
+//			if (robot.claw.isClawOpen == false) {
+//				robot.claw.ClosePosition();
+//			}
 			payloadController.readButtons();
 			//poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());

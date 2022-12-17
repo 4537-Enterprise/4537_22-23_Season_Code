@@ -13,6 +13,7 @@ public class Claw{
 
     public static double OPEN_POSITION = 1;
     public static double CLOSE_POSITION = 0;
+    public boolean isClawOpen = false;
 
     public Claw(HardwareMap map){
         ClawSensor = map.get(TouchSensor.class, "clawSensor");
@@ -31,11 +32,12 @@ public class Claw{
 
     public void OpenPosition(){
         Claw.setPosition(OPEN_POSITION);
+        isClawOpen = true;
     }
 
     public void ClosePosition(){
         //if (ClawSensor.isPressed()){
             Claw.setPosition(CLOSE_POSITION);
-
+            isClawOpen = false;
         }
     }

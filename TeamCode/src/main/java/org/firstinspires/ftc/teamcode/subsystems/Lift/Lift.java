@@ -28,12 +28,13 @@ public class Lift{
 //	static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
 	//these constants define the different heights the lift will be
-	public static final int highTerminal=14;
+	public static final int highTerminal=16;
 	public static final int medTerminal=8;
-	public static final int lowTerminal=4;
+	public static final int lowTerminal=3;
 	public static final int groundTerminal=2;
-	public static final int active=1;
-	public static final int ground=0;
+	public static final int ground=1;
+	public static final int active=0;
+
 	public int nextLevel = 0;
 
 	public String currPosition;
@@ -51,22 +52,20 @@ public class Lift{
 	public Lift(HardwareMap map, Telemetry telemetry){
 		this.telemetry = telemetry;
 
-		liftMotor = map.get(DcMotor.class,"liftMotor"); /*the link between the code and the physical motor*/
+		liftMotor = map.get(DcMotor.class, "liftMotor"); /*the link between the code and the physical motor*/
 		liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 		liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 		liftPIDCoefficients = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
 		liftPID = new PIDEx(liftPIDCoefficients);
-		this.nextLevel = (int)getCurrentPosition();
+		this.nextLevel = (int) getCurrentPosition();
 	}
-
 	public void moveUpOneLevel() {
 		switch(this.nextLevel) {
-			case ground:
-				this.setNextLevel(this.active);
-				this.nextPosition = "active";
-				break;
 			case active:
+				this.setNextLevel(this.ground);
+				this.nextPosition = "ground";
+				break;
+			case ground:
 				this.setNextLevel(this.groundTerminal);
 				this.nextPosition = "groundTerminal";
 				break;
@@ -87,13 +86,13 @@ public class Lift{
 
 	public void moveDownOneLevel() {
 		switch(this.nextLevel) {
-			case active:
-				this.setNextLevel(this.ground);
-				this.nextPosition = "ground";
-				break;
-			case groundTerminal:
+			case ground:
 				this.setNextLevel(this.active);
 				this.nextPosition = "active";
+				break;
+			case groundTerminal:
+				this.setNextLevel(this.ground);
+				this.nextPosition = "ground";
 				break;
 			case lowTerminal:
 				this.setNextLevel(this.groundTerminal);

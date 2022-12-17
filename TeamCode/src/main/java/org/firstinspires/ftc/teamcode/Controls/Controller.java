@@ -18,13 +18,14 @@ public class Controller{
 		public ButtonReader clawButton; // button A
 		public ButtonReader flipUpButton; // button B
 	    public ButtonReader flipDownButton; //button X
-	    public ButtonReader flipMiddleButton; // button Y
+	    public ButtonReader armPickUpButton; // button Y
 		public ButtonReader liftUpButton; //D-pad Up
 		public ButtonReader liftDownButton; //D-pad Down
 		public ButtonReader swingFrontButton; //D-Pad Left
 		public ButtonReader swingBackButton; //D-Pad Right
 		public ButtonReader liftMoveButton; //  right trigger
 		public ButtonReader EmergancyClose; // Left trigger
+
 
 		//TODO: Make constructor take second parameter ControlScheme
 		public Controller(GamepadEx gamepadEx1){
@@ -39,8 +40,8 @@ public class Controller{
 			flipDownButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.X );
 			this.buttons.add(this.flipDownButton);
 
-			flipMiddleButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.Y );
-			this.buttons.add(this.flipMiddleButton);
+			armPickUpButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.Y );
+			this.buttons.add(this.armPickUpButton);
 
 			liftUpButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.DPAD_UP );
 			this.buttons.add(this.liftUpButton);
