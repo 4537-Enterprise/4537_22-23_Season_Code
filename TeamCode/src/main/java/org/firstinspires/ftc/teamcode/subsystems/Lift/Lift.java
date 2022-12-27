@@ -28,7 +28,7 @@ public class Lift{
 //	static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
 	//these constants define the different heights the lift will be
-	public static final int highTerminal=16;
+	public static final int highTerminal=15;
 	public static final int medTerminal=8;
 	public static final int lowTerminal=3;
 	public static final int groundTerminal=2;
@@ -158,14 +158,14 @@ public class Lift{
 	public void moveLiftUpManual(){
 		liftMotor.setPower(liftPower);
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() + 20;
+		int newTarget = liftMotor.getCurrentPosition() + 60;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
 	public void moveLiftDownManual(){
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() - 20;
+		int newTarget = liftMotor.getCurrentPosition() - 60;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}

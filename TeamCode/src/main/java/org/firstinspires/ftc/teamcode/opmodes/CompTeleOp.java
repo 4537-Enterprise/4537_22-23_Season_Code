@@ -15,12 +15,16 @@ import org.apache.commons.math3.analysis.function.Power;
 import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 import org.firstinspires.ftc.teamcode.Controls.Controller;
+import org.firstinspires.ftc.teamcode.Controls.DriverController;
+
 
 @TeleOp(name = "CompTeleOp")
 public class CompTeleOp extends LinearOpMode{
 	CompRobot robot;
-
+	double directionControl = 1; //One Forward = 1 and -1 = backwards
 	double speedOverride = 1;
+
+	String directionControlstring = "forward";
 
 	
 	//TODO: Tell engineers to replace expansion hub on top,
@@ -30,12 +34,14 @@ public class CompTeleOp extends LinearOpMode{
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 	Controller payloadController;
+	DriverController driverController;
 	
 	@Override
 	public void runOpMode() throws InterruptedException{
 		GamepadEx payloadcontrollerEx = new GamepadEx(gamepad2);
-		//GamepadEx driverController = new GamepadEx(gamepad1);
+		GamepadEx driverControllerEx = new GamepadEx(gamepad1);
 		payloadController = new Controller (payloadcontrollerEx);
+		driverController = new DriverController (driverControllerEx);
 		robot = new CompRobot(hardwareMap, telemetry);
 
 		//Move lift to active position
@@ -54,22 +60,39 @@ public class CompTeleOp extends LinearOpMode{
 			dashboard.sendTelemetryPacket(packet);
 		}
 
+		//TODO why isnt this working?
 		while (opModeIsActive()){
 
-			if (gamepad1.left_trigger > 0.5){
-				speedOverride = 0.25;
-			} else if (gamepad1.right_trigger > 0.5){
+			if (driverController.halfSpeedButton.wasJustPressed()){ //Y button
 				speedOverride = 0.5;
-			} else{
+				telemetry.addData("hello","halfspeed");
+			}
+			if (driverController.threeFourthSpeedButton.wasJustPressed()){  //B button
+				speedOverride = 0.75;
+				telemetry.addData("hello","Fasterspeed");
+			}
+			if (driverController.fullSpeedButton.wasJustPressed()){ //A Button
 				speedOverride = 1;
+				telemetry.addData("hello","Fullspeed");
+			}
+
+			if (driverController.switchDirectionsButton.wasJustPressed()){
+				directionControl *= -1;
+				if (directionControl == 1){
+					directionControlstring =  "forward";
+				} else if (directionControl == -1) {
+					directionControlstring = "Backward";
+				} else {
+					directionControlstring = "good luck";
+				}
 			}
 
 
 			robot.drive.setWeightedDrivePower(
 					new Pose2d(
-							-gamepad1.left_stick_y * speedOverride,
-							-gamepad1.left_stick_x * speedOverride,
-							-gamepad1.right_stick_x * speedOverride
+							-gamepad1.left_stick_y * speedOverride * directionControl,
+							-gamepad1.left_stick_x * speedOverride * directionControl,
+							-gamepad1.right_stick_x * speedOverride *directionControl
 					)
 			);
 			robot.drive.update();
@@ -90,10 +113,10 @@ public class CompTeleOp extends LinearOpMode{
 				robot.lift.moveDownOneLevel();
 			}
 
-			if (payloadController.liftMoveButton.wasJustPressed()){
+			if (payloadController.liftMoveTrigger.wasJustPressed()){
 				robot.lift.moveLift();
 			}
-			if (payloadController.swingFrontButton.wasJustPressed()&& robot.lift.currPosition == "highTerminal"){
+			if (payloadController.swingFrontTrigger.wasJustPressed()&& robot.lift.currPosition == "highTerminal"){
 				robot.arm.setArmPositionUp();
 			}
 			if (payloadController.swingBackButton.wasJustPressed() && robot.lift.currPosition == "highTerminal"){
@@ -104,7 +127,6 @@ public class CompTeleOp extends LinearOpMode{
 			}
 			if (payloadController.EmergancyClose.wasJustPressed()){
 				robot.claw.ClosePosition();
-
 			}
 			if (payloadController.armPickUpButton.wasJustPressed()){
 				robot.arm.setArmPickUp();
@@ -121,6 +143,13 @@ public class CompTeleOp extends LinearOpMode{
 			if (gamepad2.right_stick_y <= -0.5){
 				robot.lift.moveLiftUpManual();
 			}
+			if (payloadController.lowestLevelButton.wasJustPressed()) {
+				robot.lift.setNextLevel(robot.lift.active);
+				robot.lift.nextPosition = "active";
+				robot.lift.moveLift();
+			}
+
+			driverController.readButtons();
 			payloadController.readButtons();
 			//poseEstimate = robot.drive.getPoseEstimate();
 			telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());
@@ -128,14 +157,14 @@ public class CompTeleOp extends LinearOpMode{
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
 			telemetry.addData ("is arm up", robot.arm.isArmUp);
 			telemetry.addData ("Arm Position", robot.arm.Arm.getCurrentPosition());
+			telemetry.addData ("Speed", speedOverride);
+			telemetry.addData ("Direction", directionControlstring);
 			//telemetry.addData("x", poseEstimate.getX());
 			//telemetry.addData("y", poseEstimate.getY());
 			//telemetry.addData("heading", poseEstimate.getHeading());
 			telemetry.update();
 			FtcDashboard.getInstance().getTelemetry().addData("Arm Position", robot.arm.Arm.getCurrentPosition());
 		}
-
-
 	}
 }
 
