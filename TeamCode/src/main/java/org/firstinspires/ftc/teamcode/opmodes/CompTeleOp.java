@@ -23,6 +23,8 @@ public class CompTeleOp extends LinearOpMode{
 	CompRobot robot;
 	double directionControl = 1; //One Forward = 1 and -1 = backwards
 	double speedOverride = 1;
+	int tempLiftLevelInt = 0;
+	String tempLiftLevelString = "lollllllllll";
 
 	String directionControlstring = "forward";
 
@@ -144,21 +146,46 @@ public class CompTeleOp extends LinearOpMode{
 				robot.lift.moveLiftUpManual();
 			}
 			if (payloadController.lowestLevelButton.wasJustPressed()) {
+				tempLiftLevelString = robot.lift.currPosition;
+				switch (tempLiftLevelString){
+					case "active":
+						tempLiftLevelInt = robot.lift.active;
+						break;
+					case "ground":
+						tempLiftLevelInt = robot.lift.ground;
+						break;
+					case "groundTerminal":
+						tempLiftLevelInt = robot.lift.groundTerminal;
+						break;
+					case "lowTerminal":
+						tempLiftLevelInt = robot.lift.lowTerminal;
+						break;
+					case "medTerminal":
+						tempLiftLevelInt = robot.lift.medTerminal;
+						break;
+					case "highTerminal":
+						tempLiftLevelInt = robot.lift.highTerminal;
+						break;
+				}
+
 				robot.lift.setNextLevel(robot.lift.active);
 				robot.lift.nextPosition = "active";
 				robot.lift.moveLift();
+				robot.lift.setNextLevel(tempLiftLevelInt);
+				robot.lift.nextPosition = tempLiftLevelString;
 			}
 
 			driverController.readButtons();
 			payloadController.readButtons();
 			//poseEstimate = robot.drive.getPoseEstimate();
-			telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());
+			//telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
 			telemetry.addData ("is arm up", robot.arm.isArmUp);
 			telemetry.addData ("Arm Position", robot.arm.Arm.getCurrentPosition());
 			telemetry.addData ("Speed", speedOverride);
 			telemetry.addData ("Direction", directionControlstring);
+			telemetry.addData ("Some lift BS", robot.lift.nextLevel);
 			//telemetry.addData("x", poseEstimate.getX());
 			//telemetry.addData("y", poseEstimate.getY());
 			//telemetry.addData("heading", poseEstimate.getHeading());

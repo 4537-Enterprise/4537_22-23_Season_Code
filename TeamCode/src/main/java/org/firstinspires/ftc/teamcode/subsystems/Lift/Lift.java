@@ -39,7 +39,7 @@ public class Lift{
 
 	public String currPosition;
 	public String nextPosition = currPosition;
-	public double liftPower = 0.5;
+	public double liftPower = 1.0;
 
 	PIDEx liftPID;
 	PIDCoefficientsEx liftPIDCoefficients;

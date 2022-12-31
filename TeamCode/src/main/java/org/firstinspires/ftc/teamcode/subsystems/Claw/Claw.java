@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Claw{
-    public TouchSensor ClawSensor;
+    //public TouchSensor ClawSensor;
     private Servo Claw;
     /*the link between the code and the physical motor*/
 
@@ -16,7 +16,7 @@ public class Claw{
     public boolean isClawOpen = false;
 
     public Claw(HardwareMap map){
-        ClawSensor = map.get(TouchSensor.class, "clawSensor");
+        //ClawSensor = map.get(TouchSensor.class, "clawSensor");
         Claw = map.get(Servo.class, "claw"); /*the link between the code and    private Servo Claw;
     /*the link between the code and the physical motor*/
 
