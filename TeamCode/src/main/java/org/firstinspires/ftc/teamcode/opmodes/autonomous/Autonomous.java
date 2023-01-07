@@ -15,13 +15,14 @@ public class Autonomous extends LinearOpMode{
 	CompRobot robot;
 
 	Pose2d poseEstimate;
-
+	String coneColor;
 	Trajectory moveToCone;
 	Trajectory ditchCone;
 	Trajectory moveToSpotOne;
 	Trajectory moveToSpotTwo;
-	Trajectory forward;
+	Trajectory backUp;
 	Trajectory moveToSpotThree;
+	Trajectory creep;
 
 	enum TrajectoryState{
 		MOVE_TO_CONE,
@@ -29,46 +30,29 @@ public class Autonomous extends LinearOpMode{
 		DITCH_CONE,
 		MOVE_TO_SPOT_ONE,
 		MOVE_TO_SPOT_TWO,
+		BACK_UP,
 		MOVE_TO_SPOT_THREE,
 		IDLE
 	}
 
 
 	TrajectoryState trajectoryState = TrajectoryState.MOVE_TO_CONE;
+	TrajectoryState desiredState;
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 
-	Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0.0));
+	Pose2d currPose = new Pose2d(0, 0, Math.toRadians(0.0));
 
 	@Override
 	public void runOpMode() throws InterruptedException{
 		robot = new CompRobot(hardwareMap, telemetry);
 
 		// Define our start pose
-		// Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0.0));
-		robot.drive.setPoseEstimate(startPose);
+		robot.drive.setPoseEstimate(currPose);
 
-		moveToCone = robot.drive.trajectoryBuilder(startPose)
-				.back(10)
-				.build();
-
-		ditchCone = robot.drive.trajectoryBuilder(startPose)
-				.back(5)
-
-				.build();
-
-		moveToSpotOne = robot.drive.trajectoryBuilder(moveToCone.end())
-				.strafeLeft(22)
-				.build();
-
-		moveToSpotTwo = robot.drive.trajectoryBuilder(moveToCone.end())
-				.back(30)
-				.forward(2)
-				.build();
-
-
-		moveToSpotThree = robot.drive.trajectoryBuilder(moveToCone.end())
-				.strafeRight(22)
+		// Initial trajectory
+		moveToCone = robot.drive.trajectoryBuilder(currPose)
+				.back(14)
 				.build();
 
 		/*Pre-Start/Post-Init Loop*/
@@ -96,57 +80,63 @@ public class Autonomous extends LinearOpMode{
 					this.trajectoryState = TrajectoryState.READ_CONE;
 					break;
 
-//				case READ_CONE:
-//					robot.colorSensor.getConeColor();
-//						if(robot.colorSensor.getConeColor() == "Fuchsia"){
-//							robot.drive.followTrajectory(ditchCone);
-//							robot.drive.followTrajectory(moveToSpotOne);
-//						}
-//						if(robot.colorSensor.getConeColor() == "Cyan"){
-//						robot.drive.followTrajectory(ditchCone);
-//						robot.drive.followTrajectory(moveToSpotTwo);
-//				}
-//						if(robot.colorSensor.getConeColor() == "Yellow"){
-//						robot.drive.followTrajectory(ditchCone);
-//						robot.drive.followTrajectory(moveToSpotThree);
-//					}
-//						break;
-//
-//
-//
-//
-//			}
-//
-//			//drive backward x amount up to the cone
-//			robot.drive.followTrajectory(moveToCone);
-//
-//
-//			robot.drive.followTrajectory(ditchCone);
-//
-//
-//			// use color sensor to read the color on the cone
-//			String coneColor = robot.colorSensor.getConeColor();
-//			//if cone is Fuchsia then drive right one tile
-//			if(coneColor == "Fuchsia"){
-//				telemetry.addLine("PINK");
-//				//R = 1
-//				//G = .5
-//				//B = .8
-////				robot.drive.followTrajectory(moveToSpotOne);
+				case READ_CONE:
+					coneColor = robot.colorSensor.getConeColor();
+					if (coneColor == "Fuchsia"){
+						desiredState = TrajectoryState.MOVE_TO_SPOT_ONE;
+						this.trajectoryState = TrajectoryState.DITCH_CONE;
+					}
+					if (coneColor == "Cyan"){
+						desiredState = TrajectoryState.MOVE_TO_SPOT_TWO;
+						this.trajectoryState = TrajectoryState.DITCH_CONE;
+					}
+					if (coneColor == "Yellow"){
+						desiredState = TrajectoryState.MOVE_TO_SPOT_THREE;
+						this.trajectoryState = TrajectoryState.DITCH_CONE;
+					}
+					if (coneColor == "Unknown"){
+						creep = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(1).build();
+						robot.drive.followTrajectory(creep);
+					}
+					break;
+
+				case DITCH_CONE:
+					ditchCone = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(11).build();
+					robot.drive.followTrajectory(ditchCone);
+					this.trajectoryState = desiredState;
+					break;
+
+				case MOVE_TO_SPOT_ONE:
+					moveToSpotOne = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(22).build();
+					robot.drive.followTrajectory(moveToSpotOne);
+					this.trajectoryState = TrajectoryState.IDLE;
+					break;
+
+				case MOVE_TO_SPOT_TWO:
+					moveToSpotTwo = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(28).build();
+					robot.drive.followTrajectory(moveToSpotTwo);
+					backUp = robot.drive.trajectoryBuilder(moveToSpotTwo.end()).forward(4).build();
+					robot.drive.followTrajectory(backUp);
+					this.trajectoryState = TrajectoryState.IDLE;
+					break;
+
+				case MOVE_TO_SPOT_THREE:
+					moveToSpotThree = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeLeft(22).build();
+					robot.drive.followTrajectory(moveToSpotThree);
+					this.trajectoryState = TrajectoryState.IDLE;
+					break;
+
+				case IDLE:
+					break;
+			}
+
 //				//then move backward x amount to target high terminal
 //				//turn x amount of degrees to face the high terminal
 //				// move lift up to high terminal
 //				//swing arm above terminal
 //				//release claw
 //				//end program
-//			}
-//			// if cone is Cyan
-//			else if(coneColor == "Cyan"){
-//				telemetry.addLine("Blue");
-//				//R: .2
-//				//G: .6
-//				//B: 1
-//				//robot.drive.followTrajectory(moveToSpotTwo);
+
 //				//then drive backward to two-three inches past the high terminal
 //				//drive back to high terminal
 //				//turn x degrees to high terminal
@@ -154,14 +144,7 @@ public class Autonomous extends LinearOpMode{
 //				//swing arm to above terminal
 //				//release claw
 //				//end program
-//			}
-//			// if cone is Yellow
-//			else if(coneColor == "Yellow"){
-//				telemetry.addLine("Yellow");
-//				//R: .6
-//				//G: 1
-//				//B: .3
-//				//robot.drive.followTrajectory(moveToSpotThree);
+
 //				//if parking 3 color
 //				//drive to the left one tile
 //				//drive backward to low terminal
@@ -171,12 +154,11 @@ public class Autonomous extends LinearOpMode{
 //				//release claw
 //				//end program
 //			}
-//			else {
-//				telemetry.addLine("Loser lol" );}
-			}
+
 		}
 	}
 }
+
 
 
 
