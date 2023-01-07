@@ -16,55 +16,63 @@ public class Autonomous extends LinearOpMode{
 
 	Pose2d poseEstimate;
 
-	Trajectory traj1; //read cone
-	Trajectory traj2; //move to parking space 1
-	Trajectory traj3; //move to parking space 2
-	Trajectory traj4; //move to parking space 3
-	//Trajectory traj4;
+	Trajectory moveToCone;
+	Trajectory ditchCone;
+	Trajectory moveToSpotOne;
+	Trajectory moveToSpotTwo;
+	Trajectory forward;
+	Trajectory moveToSpotThree;
 
-	enum TrajectoryState {
-		TRAJ1,
-		TRAJ2,
-		TRAJ3,
-		TRAJ4,
+	enum TrajectoryState{
+		MOVE_TO_CONE,
+		READ_CONE,
+		DITCH_CONE,
+		MOVE_TO_SPOT_ONE,
+		MOVE_TO_SPOT_TWO,
+		MOVE_TO_SPOT_THREE,
 		IDLE
 	}
 
-	TrajectoryState trajectoryState = TrajectoryState.TRAJ1;
 
+	TrajectoryState trajectoryState = TrajectoryState.MOVE_TO_CONE;
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 
+	Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0.0));
+
 	@Override
 	public void runOpMode() throws InterruptedException{
-
 		robot = new CompRobot(hardwareMap, telemetry);
 
 		// Define our start pose
-		Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0.0));
+		// Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0.0));
 		robot.drive.setPoseEstimate(startPose);
 
-		traj1 = robot.drive.trajectoryBuilder(startPose)
-				.forward(50)
+		moveToCone = robot.drive.trajectoryBuilder(startPose)
+				.back(10)
 				.build();
 
-		traj2 = robot.drive.trajectoryBuilder(traj1.end())
-				.strafeRight(48)
+		ditchCone = robot.drive.trajectoryBuilder(startPose)
+				.back(5)
+
 				.build();
 
-		traj3 = robot.drive.trajectoryBuilder(traj2.end())
-				.forward(46)
+		moveToSpotOne = robot.drive.trajectoryBuilder(moveToCone.end())
+				.strafeLeft(22)
 				.build();
 
-		traj4 = robot.drive.trajectoryBuilder(traj3.end())
-				.strafeLeft(48)
+		moveToSpotTwo = robot.drive.trajectoryBuilder(moveToCone.end())
+				.back(30)
+				.forward(2)
 				.build();
 
 
-
+		moveToSpotThree = robot.drive.trajectoryBuilder(moveToCone.end())
+				.strafeRight(22)
+				.build();
 
 		/*Pre-Start/Post-Init Loop*/
-		while (!opModeIsActive()) {
+		while (!opModeIsActive()){
 			telemetry.addData("Robot", "Initialized");
 			packet.put("Robot", "Initialized");
 
@@ -72,45 +80,103 @@ public class Autonomous extends LinearOpMode{
 			dashboard.sendTelemetryPacket(packet);
 		}
 
-		while (opModeIsActive()) {
+		while (opModeIsActive()){
 			robot.drive.update();
 			telemetry.update();
 			poseEstimate = robot.drive.getPoseEstimate();
 			PoseStorage.currentPose = poseEstimate;
 
-			switch (trajectoryState) {
-				case TRAJ1:
-					robot.drive.followTrajectoryAsync(traj1);
-					trajectoryState = TrajectoryState.TRAJ2;
+			telemetry.addData("RedValue", robot.colorSensor.red);
+			telemetry.addData("GreenValue", robot.colorSensor.green);
+			telemetry.addData("BlueValue", robot.colorSensor.blue);
+
+			switch (this.trajectoryState){
+				case MOVE_TO_CONE:
+					robot.drive.followTrajectory(moveToCone);
+					this.trajectoryState = TrajectoryState.READ_CONE;
 					break;
 
-				case TRAJ2:
-					if (!robot.drive.isBusy()) {
-						robot.drive.followTrajectoryAsync(traj2);
-						trajectoryState = TrajectoryState.TRAJ3;
-					}
-					break;
-
-				case TRAJ3:
-					if (!robot.drive.isBusy()) {
-						robot.drive.followTrajectoryAsync(traj3);
-						trajectoryState = TrajectoryState.TRAJ4;
-					}
-					break;
-
-				case TRAJ4:
-					if (!robot.drive.isBusy()) {
-						robot.drive.turn(360);
-						trajectoryState = TrajectoryState.IDLE;
-					}
-					break;
-
-
-
-
+//				case READ_CONE:
+//					robot.colorSensor.getConeColor();
+//						if(robot.colorSensor.getConeColor() == "Fuchsia"){
+//							robot.drive.followTrajectory(ditchCone);
+//							robot.drive.followTrajectory(moveToSpotOne);
+//						}
+//						if(robot.colorSensor.getConeColor() == "Cyan"){
+//						robot.drive.followTrajectory(ditchCone);
+//						robot.drive.followTrajectory(moveToSpotTwo);
+//				}
+//						if(robot.colorSensor.getConeColor() == "Yellow"){
+//						robot.drive.followTrajectory(ditchCone);
+//						robot.drive.followTrajectory(moveToSpotThree);
+//					}
+//						break;
+//
+//
+//
+//
+//			}
+//
+//			//drive backward x amount up to the cone
+//			robot.drive.followTrajectory(moveToCone);
+//
+//
+//			robot.drive.followTrajectory(ditchCone);
+//
+//
+//			// use color sensor to read the color on the cone
+//			String coneColor = robot.colorSensor.getConeColor();
+//			//if cone is Fuchsia then drive right one tile
+//			if(coneColor == "Fuchsia"){
+//				telemetry.addLine("PINK");
+//				//R = 1
+//				//G = .5
+//				//B = .8
+////				robot.drive.followTrajectory(moveToSpotOne);
+//				//then move backward x amount to target high terminal
+//				//turn x amount of degrees to face the high terminal
+//				// move lift up to high terminal
+//				//swing arm above terminal
+//				//release claw
+//				//end program
+//			}
+//			// if cone is Cyan
+//			else if(coneColor == "Cyan"){
+//				telemetry.addLine("Blue");
+//				//R: .2
+//				//G: .6
+//				//B: 1
+//				//robot.drive.followTrajectory(moveToSpotTwo);
+//				//then drive backward to two-three inches past the high terminal
+//				//drive back to high terminal
+//				//turn x degrees to high terminal
+//				//move lift to high terminal
+//				//swing arm to above terminal
+//				//release claw
+//				//end program
+//			}
+//			// if cone is Yellow
+//			else if(coneColor == "Yellow"){
+//				telemetry.addLine("Yellow");
+//				//R: .6
+//				//G: 1
+//				//B: .3
+//				//robot.drive.followTrajectory(moveToSpotThree);
+//				//if parking 3 color
+//				//drive to the left one tile
+//				//drive backward to low terminal
+//				//turn x degrees toward low terminal
+//				//move lift to low terminal
+//				//swing arm to above the low terminal
+//				//release claw
+//				//end program
+//			}
+//			else {
+//				telemetry.addLine("Loser lol" );}
 			}
-
 		}
-
 	}
 }
+
+
+

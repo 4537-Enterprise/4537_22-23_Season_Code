@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Flip.Flipper;
 import org.firstinspires.ftc.teamcode.subsystems.Lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.CompMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSensor.MyColorSensor;
 
 public class CompRobot{
 
@@ -17,7 +18,7 @@ public class CompRobot{
 	public Flipper flip;
 	public ArmSwing arm;
 	public Claw claw;
-
+	public MyColorSensor colorSensor;
 
 	Telemetry telemetry;
 	TelemetryPacket packet = new TelemetryPacket();
@@ -31,10 +32,15 @@ public class CompRobot{
 		arm = new ArmSwing(map);
 		lift = new Lift(map, telemetry);
     	claw = new Claw(map);
+		colorSensor = new MyColorSensor(map); //figure out port
 		telemetry.addData("Robot", "Initialized");
 		telemetry.update();
 
 		packet.put("Robot", "Initialized");
 		dashboard.sendTelemetryPacket(packet);
+		//Move lift to active position
+		this.lift.setNextLevel(this.lift.active);
+		this.lift.moveLift();
+		this.arm.setArmPositionInitilize();
 	}
 }

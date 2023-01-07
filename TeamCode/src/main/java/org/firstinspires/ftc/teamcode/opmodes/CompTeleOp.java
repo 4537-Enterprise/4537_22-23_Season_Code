@@ -46,12 +46,6 @@ public class CompTeleOp extends LinearOpMode{
 		driverController = new DriverController (driverControllerEx);
 		robot = new CompRobot(hardwareMap, telemetry);
 
-		//Move lift to active position
-		robot.lift.setNextLevel(robot.lift.active);
-		robot.lift.moveLift();
-		//Move Arm to specified location
-		robot.arm.setArmPositionInitilize();
-
 		double ClawPosition = robot.claw.getPosition();
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()){

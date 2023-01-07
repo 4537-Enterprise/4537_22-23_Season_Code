@@ -106,9 +106,6 @@ public class RoadRunnerDemo extends LinearOpMode{
 					}
 					break;
 
-
-
-
 			}
 
 		}
