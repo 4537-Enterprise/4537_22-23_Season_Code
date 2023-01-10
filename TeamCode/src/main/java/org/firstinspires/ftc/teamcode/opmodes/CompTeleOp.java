@@ -31,8 +31,6 @@ public class CompTeleOp extends LinearOpMode{
 	
 	//TODO: Tell engineers to replace expansion hub on top,
 
-	//Pose2d poseEstimate;
-
 	TelemetryPacket packet = new TelemetryPacket();
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 	Controller payloadController;
@@ -47,6 +45,7 @@ public class CompTeleOp extends LinearOpMode{
 		robot = new CompRobot(hardwareMap, telemetry);
 
 		double ClawPosition = robot.claw.getPosition();
+
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()){
 			telemetry.addData("Robot", "Initialized");
@@ -58,7 +57,6 @@ public class CompTeleOp extends LinearOpMode{
 
 		//TODO why isnt this working?
 		while (opModeIsActive()){
-
 			if (driverController.halfSpeedButton.wasJustPressed()){ //Y button
 				speedOverride = 0.5;
 				telemetry.addData("hello","halfspeed");

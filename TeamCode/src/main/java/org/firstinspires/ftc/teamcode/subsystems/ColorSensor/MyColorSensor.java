@@ -14,8 +14,8 @@ public class MyColorSensor{
 	public double green;
 
 	// Constructor
-	public MyColorSensor(HardwareMap map) {
-		colorSensor = map.get(ColorSensor.class, "colorSensor");
+	public MyColorSensor(HardwareMap map, String str){
+		colorSensor = map.get(ColorSensor.class, str);
 	}
 
 

@@ -9,13 +9,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "test")
-public class Autonomous extends LinearOpMode{
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rautonomous", group = "test")
+public class Rautonomous extends LinearOpMode{
 
 	CompRobot robot;
 
 	Pose2d poseEstimate;
-	String coneColor;
+	String coneColor1;
+	String coneColor2;
 	Trajectory moveToCone;
 	Trajectory ditchCone;
 	Trajectory moveToSpotOne;
@@ -70,10 +71,6 @@ public class Autonomous extends LinearOpMode{
 			poseEstimate = robot.drive.getPoseEstimate();
 			PoseStorage.currentPose = poseEstimate;
 
-			telemetry.addData("RedValue", robot.colorSensor.red);
-			telemetry.addData("GreenValue", robot.colorSensor.green);
-			telemetry.addData("BlueValue", robot.colorSensor.blue);
-
 			switch (this.trajectoryState){
 				case MOVE_TO_CONE:
 					robot.drive.followTrajectory(moveToCone);
@@ -81,20 +78,21 @@ public class Autonomous extends LinearOpMode{
 					break;
 
 				case READ_CONE:
-					coneColor = robot.colorSensor.getConeColor();
-					if (coneColor == "Fuchsia"){
+					coneColor1 = robot.colorSensor1.getConeColor();
+					coneColor2 = robot.colorSensor2.getConeColor();
+					if (coneColor1 == "Fuchsia" || coneColor2 == "Fuchsia"){
 						desiredState = TrajectoryState.MOVE_TO_SPOT_ONE;
 						this.trajectoryState = TrajectoryState.DITCH_CONE;
 					}
-					if (coneColor == "Cyan"){
+					else if (coneColor1 == "Cyan" || coneColor2 == "Cyan"){
 						desiredState = TrajectoryState.MOVE_TO_SPOT_TWO;
 						this.trajectoryState = TrajectoryState.DITCH_CONE;
 					}
-					if (coneColor == "Yellow"){
+					else if (coneColor1 == "Yellow" || coneColor2 == "Yellow"){
 						desiredState = TrajectoryState.MOVE_TO_SPOT_THREE;
 						this.trajectoryState = TrajectoryState.DITCH_CONE;
 					}
-					if (coneColor == "Unknown"){
+					else {
 						creep = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(1).build();
 						robot.drive.followTrajectory(creep);
 					}
@@ -129,35 +127,10 @@ public class Autonomous extends LinearOpMode{
 				case IDLE:
 					break;
 			}
-
-//				//then move backward x amount to target high terminal
-//				//turn x amount of degrees to face the high terminal
-//				// move lift up to high terminal
-//				//swing arm above terminal
-//				//release claw
-//				//end program
-
-//				//then drive backward to two-three inches past the high terminal
-//				//drive back to high terminal
-//				//turn x degrees to high terminal
-//				//move lift to high terminal
-//				//swing arm to above terminal
-//				//release claw
-//				//end program
-
-//				//if parking 3 color
-//				//drive to the left one tile
-//				//drive backward to low terminal
-//				//turn x degrees toward low terminal
-//				//move lift to low terminal
-//				//swing arm to above the low terminal
-//				//release claw
-//				//end program
-//			}
-
 		}
 	}
 }
+
 
 
 

@@ -57,7 +57,7 @@ public class Lift{
 		liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		liftPIDCoefficients = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
 		liftPID = new PIDEx(liftPIDCoefficients);
-		this.nextLevel = (int) getCurrentPosition();
+		this.nextLevel = (int)getCurrentPosition();
 		liftMotor.setPower(liftPower);
 	}
 	public void moveUpOneLevel() {
@@ -158,14 +158,14 @@ public class Lift{
 	public void moveLiftUpManual(){
 		liftMotor.setPower(liftPower);
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() + 60;
+		int newTarget = liftMotor.getCurrentPosition() + 120;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
 	public void moveLiftDownManual(){
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() - 60;
+		int newTarget = liftMotor.getCurrentPosition() - 120;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}

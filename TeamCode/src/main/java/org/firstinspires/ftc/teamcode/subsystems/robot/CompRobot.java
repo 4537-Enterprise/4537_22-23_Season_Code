@@ -18,7 +18,8 @@ public class CompRobot{
 	public Flipper flip;
 	public ArmSwing arm;
 	public Claw claw;
-	public MyColorSensor colorSensor;
+	public MyColorSensor colorSensor1;
+	public MyColorSensor colorSensor2;
 
 	Telemetry telemetry;
 	TelemetryPacket packet = new TelemetryPacket();
@@ -32,15 +33,18 @@ public class CompRobot{
 		arm = new ArmSwing(map);
 		lift = new Lift(map, telemetry);
     	claw = new Claw(map);
-		colorSensor = new MyColorSensor(map); //figure out port
+		colorSensor1 = new MyColorSensor(map, "ColorSensor1");
+		colorSensor2 = new MyColorSensor(map, "ColorSensor2");
 		telemetry.addData("Robot", "Initialized");
 		telemetry.update();
 
 		packet.put("Robot", "Initialized");
 		dashboard.sendTelemetryPacket(packet);
+
 		//Move lift to active position
 		this.lift.setNextLevel(this.lift.active);
 		this.lift.moveLift();
+
 		this.arm.setArmPositionInitilize();
 	}
 }

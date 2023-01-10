@@ -89,13 +89,13 @@ public class ArmSwing{
 	}
 
 	public void moveArmUpManual(){
-		int newTarget = Arm.getCurrentPosition() + 20;
+		int newTarget = Arm.getCurrentPosition() + 60;
 		Arm.setTargetPosition(newTarget);
 		Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
 	public void moveArmDownManual(){
-		int newTarget = Arm.getCurrentPosition() - 20;
+		int newTarget = Arm.getCurrentPosition() - 60;
 		Arm.setTargetPosition(newTarget);
 		Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
