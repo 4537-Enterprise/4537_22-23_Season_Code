@@ -59,8 +59,6 @@ public class CompTeleOp extends LinearOpMode{
 		//TODO why isnt this working?
 		while (opModeIsActive()){
 			if (robotInitFlag == false){
-				robot.lift.setNextLevel(robot.lift.active);
-				robot.lift.moveLift();
 				//	robot.arm.setArmPositionInitilize();
 				robotInitFlag = true;
 			}
@@ -164,6 +162,14 @@ public class CompTeleOp extends LinearOpMode{
 			telemetry.addData("Speed", speedOverride);
 			telemetry.addData("Direction", directionControlstring);
 			telemetry.addData("Some lift BS", robot.lift.nextLevel);
+			robot.colorSensor1.getConeColor();
+			robot.colorSensor2.getConeColor();
+			telemetry.addData("red1", robot.colorSensor1.red);
+			telemetry.addData("blue1", robot.colorSensor1.blue);
+			telemetry.addData("green1", robot.colorSensor1.green);
+			telemetry.addData("red2", robot.colorSensor2.red);
+			telemetry.addData("blue2", robot.colorSensor2.blue);
+			telemetry.addData("green2", robot.colorSensor2.green);
 			//telemetry.addData("x", poseEstimate.getX());
 			//telemetry.addData("y", poseEstimate.getY());
 			//telemetry.addData("heading", poseEstimate.getHeading());
