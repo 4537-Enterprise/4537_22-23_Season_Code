@@ -21,11 +21,11 @@ public class Controller{
 		public ButtonReader clawButton; // button A
 		//public ButtonReader flipUpButton; // button
 	    public ButtonReader flipDownButton; //button X
-	    public ButtonReader armPickUpButton; // button Y
+	  //  public ButtonReader armPickUpButton; // button Y
 		public ButtonReader liftUpButton; //D-pad Up
 		public ButtonReader liftDownButton; //D-pad Down
-		public TriggerReader swingFrontTrigger; //Left trigger
-		public ButtonReader swingBackButton; // Left bumper
+	//	public TriggerReader swingFrontTrigger; //Left trigger
+		//public ButtonReader swingBackButton; // Left bumper
 		public TriggerReader liftMoveTrigger; //  right trigger
 		public ButtonReader EmergancyClose; // B button
 		public ButtonReader lowestLevelButton; // Right Bumper
@@ -44,8 +44,8 @@ public class Controller{
 			flipDownButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.X );
 			this.buttons.add(this.flipDownButton);
 
-			armPickUpButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.Y );
-			this.buttons.add(this.armPickUpButton);
+//			armPickUpButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.Y );
+//			this.buttons.add(this.armPickUpButton);
 
 			liftUpButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.DPAD_UP );
 			this.buttons.add(this.liftUpButton);
@@ -53,11 +53,11 @@ public class Controller{
 			liftDownButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.DPAD_DOWN );
 			this.buttons.add(this.liftDownButton);
 
-			swingFrontTrigger = new TriggerReader( gamepadEx1, GamepadKeys.Trigger.LEFT_TRIGGER);
-			this.triggers.add (this.swingFrontTrigger);
-
-			swingBackButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.LEFT_BUMPER );
-			this.buttons.add(this.swingBackButton);
+//			swingFrontTrigger = new TriggerReader( gamepadEx1, GamepadKeys.Trigger.LEFT_TRIGGER);
+//			this.triggers.add (this.swingFrontTrigger);
+//
+//			swingBackButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.LEFT_BUMPER );
+//			this.buttons.add(this.swingBackButton);
 
 			liftMoveTrigger = new TriggerReader(gamepadEx1, GamepadKeys.Trigger.RIGHT_TRIGGER);
 			this.triggers.add (this.liftMoveTrigger);

@@ -90,7 +90,7 @@ public class MyColorSensor{
 		}
 
 		// if b is in the range
-		if(b >= 0.9 && b <= 1.0) {
+		if(b >= 0.8 && b <= 1.0) {
 			blueCheck=true;
 		}
 
@@ -115,12 +115,12 @@ public class MyColorSensor{
 		}
 
 		// if g is in the range
-		if(g >= 0.7 && g <= 1.0) {
+		if(g >= 0.8 && g <= 1.0) {
 			greenCheck=true;
 		}
 
 		// if b is in the range
-		if(b >= 0.1 && b <= 0.5) {
+		if(b >= 0.0 && b <= 0.4) {
 			blueCheck=true;
 		}
 

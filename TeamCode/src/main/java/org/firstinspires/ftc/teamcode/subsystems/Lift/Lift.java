@@ -128,7 +128,7 @@ public class Lift{
 		return currentPosition;
 	}
 
-	private String getPositionString(int position) {
+	public String getPositionString(int position) {
 		switch(position) {
 			case highTerminal:
 				return "highTerminal";
@@ -147,6 +147,30 @@ public class Lift{
 		}
 	}
 
+	public int getPositionValue(String position) {
+		if(position == "ground") {
+			return this.ground;
+		}
+		else if(position == "active") {
+			return this.active;
+		}
+		else if(position == "groundTerminal") {
+			return this.groundTerminal;
+		}
+		else if(position == "lowTerminal") {
+			return this.lowTerminal;
+		}
+		else if(position == "medTerminal") {
+			return this.medTerminal;
+		}
+		else if(position == "highTerminal") {
+			return this.highTerminal;
+		}
+		else {
+			return 0;
+		}
+	}
+
 	public void moveLift() {
 		liftMotor.setPower(liftPower);
 		this.setPower(liftPower);
@@ -158,14 +182,14 @@ public class Lift{
 	public void moveLiftUpManual(){
 		liftMotor.setPower(liftPower);
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() + 120;
+		int newTarget = liftMotor.getCurrentPosition() + 60;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
 	public void moveLiftDownManual(){
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() - 120;
+		int newTarget = liftMotor.getCurrentPosition() - 60;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}

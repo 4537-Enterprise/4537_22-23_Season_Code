@@ -17,6 +17,8 @@ public class Rautonomous extends LinearOpMode{
 	//TODO: YOU DID THIS RIGHT?
 	//TODO: CONFIGURE THE DRIVER HUB FOR TWO COLOR SENSORS
 	CompRobot robot;
+	boolean robotInitFlag = false;
+	int counter = 0;
 
 	Pose2d poseEstimate;
 	String coneColor1;
@@ -73,6 +75,12 @@ public class Rautonomous extends LinearOpMode{
 		}
 
 		while (opModeIsActive()){
+			if (robotInitFlag == false){
+				robot.lift.setNextLevel(robot.lift.active);
+				robot.lift.moveLift();
+			//	robot.arm.setArmPositionInitilize();
+				robotInitFlag = true;
+			}
 			robot.drive.update();
 			telemetry.update();
 			poseEstimate = robot.drive.getPoseEstimate();
@@ -102,7 +110,13 @@ public class Rautonomous extends LinearOpMode{
 					else {
 						creep = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(1).build();
 						robot.drive.followTrajectory(creep);
+						counter++;
+						if(counter >= 7){
+							desiredState=TrajectoryState.MOVE_TO_SPOT_ONE;
+							this.trajectoryState = TrajectoryState.DITCH_CONE;
+						}
 					}
+
 					break;
 
 				case DITCH_CONE:
