@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Controls.DriverController;
 public class CompTeleOp extends LinearOpMode{
 	CompRobot robot;
 	double directionControl = 1; //One Forward = 1 and -1 = backwards
-	double speedOverride = 1;
+	double speedOverride = 0.8;
 	int tempLiftLevelInt = 0;
 	int tempLiftLevelPlaceHolder = 0;
 	boolean robotInitFlag = false;
@@ -60,21 +60,24 @@ public class CompTeleOp extends LinearOpMode{
 		while (opModeIsActive()){
 			if (robotInitFlag == false){
 				//	robot.arm.setArmPositionInitilize();
+				robot.robotInit();
 				robotInitFlag = true;
 			}
-			if (driverController.halfSpeedButton.wasJustPressed()){ //Y button
-				speedOverride = 0.5;
-				telemetry.addData("hello", "halfspeed");
-			}
-			if (driverController.threeFourthSpeedButton.wasJustPressed()){  //B button
-				speedOverride = 0.75;
-				telemetry.addData("hello", "Fasterspeed");
-			}
-			if (driverController.fullSpeedButton.wasJustPressed()){ //A Button
-				speedOverride = 1;
-				telemetry.addData("hello", "Fullspeed");
-			}
-
+//			if (driverController.halfSpeedButton.wasJustPressed()){ //Y button
+//				this.speedOverride = 0.5;
+//				telemetry.addData("hello", "halfspeed");
+//			}
+//			if (driverController.threeFourthSpeedButton.wasJustPressed()){  //B button
+//				this.speedOverride = 0.75;
+//				telemetry.addData("hello", "Fasterspeed");
+//			}
+//			if (driverController.fullSpeedButton.wasJustPressed()){ //A Button
+//				this.speedOverride = 1;
+//				telemetry.addData("hello", "Fullspeed");
+			//}
+			if (driverController.triggerHalfSpeed.isDown()){
+				this.speedOverride = 0.5;
+			} else {this.speedOverride = 0.8;}
 			if (driverController.switchDirectionsButton.wasJustPressed()){
 				directionControl *= -1;
 				if (directionControl == 1){
@@ -89,9 +92,9 @@ public class CompTeleOp extends LinearOpMode{
 
 			robot.drive.setWeightedDrivePower(
 					new Pose2d(
-							-gamepad1.left_stick_y * speedOverride * directionControl,
-							-gamepad1.left_stick_x * speedOverride * directionControl,
-							-gamepad1.right_stick_x * speedOverride * directionControl
+							-gamepad1.left_stick_y * this.speedOverride * directionControl,
+							-gamepad1.left_stick_x * this.speedOverride * directionControl,
+							-gamepad1.right_stick_x * this.speedOverride * directionControl
 					)
 			);
 			robot.drive.update();
@@ -157,19 +160,22 @@ public class CompTeleOp extends LinearOpMode{
 			//telemetry.addData("ClawSensor", robot.claw.ClawSensor.isPressed());
 			telemetry.addData("liftNextPos", robot.lift.nextPosition);
 			telemetry.addData("liftCurrentPos", robot.lift.currPosition);
-			telemetry.addData("is arm up", robot.arm.isArmUp);
-			telemetry.addData("Arm Position", robot.arm.Arm.getCurrentPosition());
-			telemetry.addData("Speed", speedOverride);
+			//telemetry.addData("is arm up", robot.arm.isArmUp);
+			//telemetry.addData("Arm Position", robot.arm.Arm.getCurrentPosition());
+			telemetry.addData("Speed", this.speedOverride);
 			telemetry.addData("Direction", directionControlstring);
-			telemetry.addData("Some lift BS", robot.lift.nextLevel);
+		//	telemetry.addData("Some lift BS", robot.lift.nextLevel);
 			robot.colorSensor1.getConeColor();
 			robot.colorSensor2.getConeColor();
-			telemetry.addData("red1", robot.colorSensor1.red);
-			telemetry.addData("blue1", robot.colorSensor1.blue);
-			telemetry.addData("green1", robot.colorSensor1.green);
-			telemetry.addData("red2", robot.colorSensor2.red);
-			telemetry.addData("blue2", robot.colorSensor2.blue);
-			telemetry.addData("green2", robot.colorSensor2.green);
+			telemetry.addData("claw value: ", robot.claw.getPosition());
+
+//			telemetry.addData("red1", robot.colorSensor1.red);
+//			telemetry.addData("blue1", robot.colorSensor1.blue);
+//			telemetry.addData("green1", robot.colorSensor1.green);
+//			telemetry.addData("red2", robot.colorSensor2.red);
+//			telemetry.addData("blue2", robot.colorSensor2.blue);
+//			telemetry.addData("green2", robot.colorSensor2.green);
+
 			//telemetry.addData("x", poseEstimate.getX());
 			//telemetry.addData("y", poseEstimate.getY());
 			//telemetry.addData("heading", poseEstimate.getHeading());

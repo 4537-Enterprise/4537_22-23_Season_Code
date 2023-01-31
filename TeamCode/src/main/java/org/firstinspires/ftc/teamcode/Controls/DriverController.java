@@ -18,6 +18,7 @@ public class DriverController {
 	public ButtonReader fullSpeedButton; // A
 	public ButtonReader threeFourthSpeedButton; // B
 	public ButtonReader switchDirectionsButton; // X
+	public TriggerReader triggerHalfSpeed; //Right trigger
 
 	public DriverController(GamepadEx gamepadEx2){
 
@@ -32,6 +33,9 @@ public class DriverController {
 
 		this.switchDirectionsButton = new ButtonReader(gamepadEx2, GamepadKeys.Button.X);
 		this.buttons.add(this.switchDirectionsButton);
+
+		this.triggerHalfSpeed = new TriggerReader(gamepadEx2, GamepadKeys.Trigger.RIGHT_TRIGGER);
+		this.triggers.add(this.triggerHalfSpeed);
 
 
 	}

@@ -31,8 +31,8 @@ public class Lift{
 	public static final int highTerminal=15;// to the height of 36 inches, high terminal 33, 1/4
 	public static final int medTerminal=10;//adding 1 //at 27 inches, up three inches
 	public static final int lowTerminal=6; //adding 2//adding 1 //14 inches, up 8 inches
-	public static final int groundTerminal=4;
-	public static final int ground=1;
+//	public static final int groundTerminal=4;
+//	public static final int ground=1;
 	public static final int active=0;
 
 	public int nextLevel = 0;
@@ -58,22 +58,21 @@ public class Lift{
 		liftPIDCoefficients = new PIDCoefficientsEx(kP, kI, kD, integralSumMax, stabilityThreshold, lowPassGain);
 		liftPID = new PIDEx(liftPIDCoefficients);
 		this.nextLevel = (int)getCurrentPosition();
-		liftMotor.setPower(liftPower);
 	}
 	public void moveUpOneLevel() {
 		switch(this.nextLevel) {
 			case active:
-				this.setNextLevel(this.ground);
-				this.nextPosition = "ground";
-				break;
-			case ground:
-				this.setNextLevel(this.groundTerminal);
-				this.nextPosition = "groundTerminal";
-				break;
-			case groundTerminal:
 				this.setNextLevel(this.lowTerminal);
 				this.nextPosition = "lowTerminal";
 				break;
+//			case ground:
+//				this.setNextLevel(this.groundTerminal);
+//				this.nextPosition = "groundTerminal";
+//				break;
+//			case groundTerminal:
+//				this.setNextLevel(this.lowTerminal);
+//				this.nextPosition = "lowTerminal";
+//				break;
 			case lowTerminal:
 				this.setNextLevel(this.medTerminal);
 				this.nextPosition = "medTerminal";
@@ -87,18 +86,18 @@ public class Lift{
 
 	public void moveDownOneLevel() {
 		switch(this.nextLevel) {
-			case ground:
+			case active:
 				this.setNextLevel(this.active);
 				this.nextPosition = "active";
-				break;
-			case groundTerminal:
-				this.setNextLevel(this.ground);
-				this.nextPosition = "ground";
-				break;
-			case lowTerminal:
-				this.setNextLevel(this.groundTerminal);
-				this.nextPosition = "groundTerminal";
-				break;
+			break;
+//			case groundTerminal:
+//				this.setNextLevel(this.ground);
+//				this.nextPosition = "ground";
+//				break;
+//			case lowTerminal:
+//				this.setNextLevel(this.groundTerminal);
+//				this.nextPosition = "groundTerminal";
+//				break;
 			case medTerminal:
 				this.setNextLevel(this.lowTerminal);
 				this.nextPosition = "lowTerminal";
@@ -136,27 +135,24 @@ public class Lift{
 				return "medTerminal";
 			case lowTerminal:
 				return "lowTerminal";
-			case groundTerminal:
-				return "groundTerminal";
+
 			case active:
 				return "active";
-			case ground:
-				return "ground";
 			default:
 				return "unknown position";
 		}
 	}
 
 	public int getPositionValue(String position) {
-		if(position == "ground") {
-			return this.ground;
-		}
-		else if(position == "active") {
+//		if(position == "ground") {
+//			return this.ground;
+//		}
+		if(position == "active") {
 			return this.active;
 		}
-		else if(position == "groundTerminal") {
-			return this.groundTerminal;
-		}
+//		else if(position == "groundTerminal") {
+//			return this.groundTerminal;
+//		}
 		else if(position == "lowTerminal") {
 			return this.lowTerminal;
 		}
@@ -182,14 +178,14 @@ public class Lift{
 	public void moveLiftUpManual(){
 		liftMotor.setPower(liftPower);
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() + 60;
+		int newTarget = liftMotor.getCurrentPosition() + 120;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
-
+//great work thanks
 	public void moveLiftDownManual(){
 		this.setPower(liftPower);
-		int newTarget = liftMotor.getCurrentPosition() - 60;
+		int newTarget = liftMotor.getCurrentPosition() - 120;
 		liftMotor.setTargetPosition(newTarget);
 		liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
@@ -221,7 +217,7 @@ public class Lift{
 	public void updateIdle(){
 		updateLiftPID();
 		double power = Range.clip(
-				liftPID.calculate(ground, getCurrentPosition()),
+				liftPID.calculate(active, getCurrentPosition()),
 				-1,
 				1
 		);

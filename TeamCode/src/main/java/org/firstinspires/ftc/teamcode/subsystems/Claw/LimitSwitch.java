@@ -12,7 +12,7 @@ public class LimitSwitch{
 	DigitalChannel Limit;
 	public DigitalChannel LimitSwitch;
 
-	public boolean limitSwitchOn = false;
+	public boolean limitSwitchOn = true;
 
 	public LimitSwitch(HardwareMap map){
 		LimitSwitch = map.get(DigitalChannel.class, "limitSwitch");

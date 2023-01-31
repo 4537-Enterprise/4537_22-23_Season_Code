@@ -76,9 +76,7 @@ public class Rautonomous extends LinearOpMode{
 
 		while (opModeIsActive()){
 			if (robotInitFlag == false){
-				robot.lift.setNextLevel(robot.lift.active);
-				robot.lift.moveLift();
-			//	robot.arm.setArmPositionInitilize();
+				robot.robotInit();
 				robotInitFlag = true;
 			}
 			robot.drive.update();

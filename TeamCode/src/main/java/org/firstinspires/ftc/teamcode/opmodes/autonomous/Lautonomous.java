@@ -24,6 +24,7 @@ public class Lautonomous extends LinearOpMode{
 	Trajectory backUp;
 	Trajectory moveToSpotThree;
 	Trajectory creep;
+	boolean robotInitFlag;
 	// TODO: DOUBLE CHECK THIS
 	// Trajectory moveToTerminal;
 	// TODO: DOUBLE CHECK THIS
@@ -77,6 +78,10 @@ public class Lautonomous extends LinearOpMode{
 			telemetry.update();
 			poseEstimate = robot.drive.getPoseEstimate();
 			PoseStorage.currentPose = poseEstimate;
+			if (robotInitFlag == false){
+				robot.robotInit();
+				robotInitFlag = true;
+			}
 
 			switch (this.trajectoryState){
 				case MOVE_TO_CONE:
