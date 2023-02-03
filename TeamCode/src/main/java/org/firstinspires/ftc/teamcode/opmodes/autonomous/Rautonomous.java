@@ -30,8 +30,8 @@ public class Rautonomous extends LinearOpMode{
 	Trajectory backUp;
 	Trajectory moveToSpotThree;
 	Trajectory creep;
-//	Trajectory moveToTerminal;
-//	Trajectory moveFromTerminal;
+	Trajectory moveToTerminal;
+	Trajectory moveFromTerminal;
 
 	enum TrajectoryState{
 		MOVE_TO_CONE,
@@ -40,8 +40,8 @@ public class Rautonomous extends LinearOpMode{
 		MOVE_TO_SPOT_ONE,
 		MOVE_TO_SPOT_TWO,
 		MOVE_TO_SPOT_THREE,
-//		LOW_TERMINAL,
-//		HIGH_TERMINAL,
+		LOW_TERMINAL,
+		HIGH_TERMINAL,
 		IDLE
 	}
 
@@ -118,8 +118,6 @@ public class Rautonomous extends LinearOpMode{
 					break;
 
 				case DITCH_CONE:
-					// TODO: DOUBLE CHECK THIS MEASUREMENT
-					// ditchCone = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(5).build();
 					ditchCone = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(11).build();
 					robot.drive.followTrajectory(ditchCone);
 					this.trajectoryState = desiredState;
@@ -129,7 +127,7 @@ public class Rautonomous extends LinearOpMode{
 					moveToSpotOne = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(22).build();
 					robot.drive.followTrajectory(moveToSpotOne);
 					// AFTER SPOT ONE GO TO HIGH TERMINAL
-					// this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
+					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
@@ -139,69 +137,63 @@ public class Rautonomous extends LinearOpMode{
 					backUp = robot.drive.trajectoryBuilder(moveToSpotTwo.end()).forward(4).build();
 					robot.drive.followTrajectory(backUp);
 					// AFTER SPOT TWO GO TO HIGH TERMINAL
-					// this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
-					this.trajectoryState = TrajectoryState.IDLE;
+					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
 					break;
 
 				case MOVE_TO_SPOT_THREE:
 					moveToSpotThree = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeLeft(22).build();
 					robot.drive.followTrajectory(moveToSpotThree);
 					// AFTER SPOT THREE GO TO LOW TERMINAL
-					// this.trajectoryState = TrajectoryState.LOW_TERMINAL;
+					this.trajectoryState = TrajectoryState.LOW_TERMINAL;
+					break;
+
+  					case LOW_TERMINAL:
+//					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS COUNTER-CLOCKWISE
+//					// TODO: OTHERWISE THIS NEEDS TO BE 135
+     				robot.drive.turn(-135);
+//					// Set lift and arm before we move
+                	robot.lift.setNextLevel(robot.lift.lowTerminal);
+					robot.lift.moveLift();
+//					// TODO: DOUBLE-CHECK THIS MEASUREMENT
+					 moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
+					 robot.drive.followTrajectory(moveToTerminal);
+//					// Drop cone
+				robot.claw.OpenPosition();
+//					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
+					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
+					robot.drive.followTrajectory(moveFromTerminal);
+//					// Reset robot to initial state
+					robot.lift.setNextLevel(robot.lift.active);
+					robot.lift.moveLift();
+//					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
+//					// TODO: OTHERWISE THIS NEEDS TO BE 45
+					robot.drive.turn(-45);
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
-//				case LOW_TERMINAL:
-//					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS COUNTER-CLOCKWISE
-//					// TODO: OTHERWISE THIS NEEDS TO BE 135
-//					robot.drive.turn(-135);
-//					// Set lift and arm before we move
-//					robot.lift.setNextLevel(robot.lift.lowTerminal);
-//					robot.lift.moveLift();
-//					robot.arm.setArmPositionUp();
-//					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-//					moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(6).build();
-//					robot.drive.followTrajectory(moveToTerminal);
-//					// Drop cone
-//					robot.claw.OpenPosition();
-//					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-//					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(6).build();
-//					robot.drive.followTrajectory(moveFromTerminal);
-//					// Reset robot to initial state
-//					robot.lift.setNextLevel(robot.lift.active);
-//					robot.lift.moveLift();
-//					robot.arm.setArmPickUp();
-//					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
-//					// TODO: OTHERWISE THIS NEEDS TO BE 45
-//					robot.drive.turn(-45);
-//					this.trajectoryState = TrajectoryState.IDLE;
-//					break;
-
-//				case HIGH_TERMINAL:
+				case HIGH_TERMINAL:
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
 //					// TODO: OTHERWISE THIS NEEDS TO BE 135
-//					robot.drive.turn(-135);
+					robot.drive.turn(-135);
 //					// Set lift and arm before we move
-//					robot.lift.setNextLevel(robot.lift.highTerminal);
-//					robot.lift.moveLift();
-//					robot.arm.setArmPositionUp();
+					robot.lift.setNextLevel(robot.lift.highTerminal);
+					robot.lift.moveLift();
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-//					moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(6).build();
-//					robot.drive.followTrajectory(moveToTerminal);
+					moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
+					robot.drive.followTrajectory(moveToTerminal);
 //					// Drop cone
-//					robot.claw.OpenPosition();
+					robot.claw.OpenPosition();
 //					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-//					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(6).build();
-//					robot.drive.followTrajectory(moveFromTerminal);
+					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
+					robot.drive.followTrajectory(moveFromTerminal);
 //					// Reset robot to initial state
-//					robot.lift.setNextLevel(robot.lift.active);
-//					robot.lift.moveLift();
-//					robot.arm.setArmPickUp();
+					robot.lift.setNextLevel(robot.lift.active);
+					robot.lift.moveLift();
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
 //					// TODO: OTHERWISE THIS NEEDS TO BE 45
-//					robot.drive.turn(-45);
-//					this.trajectoryState = TrajectoryState.IDLE;
-//					break;
+					robot.drive.turn(-45);
+					this.trajectoryState = TrajectoryState.IDLE;
+					break;
 
 				case IDLE:
 					break;
