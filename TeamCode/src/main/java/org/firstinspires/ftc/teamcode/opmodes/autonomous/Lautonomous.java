@@ -13,10 +13,11 @@ import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 public class Lautonomous extends LinearOpMode{
 
 	CompRobot robot;
-
+	boolean robotInitFlag;
 	Pose2d poseEstimate;
 	String coneColor1;
 	String coneColor2;
+
 	Trajectory moveToCone;
 	Trajectory ditchCone;
 	Trajectory moveToSpotOne;
@@ -24,9 +25,10 @@ public class Lautonomous extends LinearOpMode{
 	Trajectory backUp;
 	Trajectory moveToSpotThree;
 	Trajectory creep;
-	boolean robotInitFlag;
-	Trajectory moveToTerminal;
-	Trajectory moveFromTerminal;
+	Trajectory moveLeftToJunction;
+	Trajectory moveForwardToJunction;
+	Trajectory moveBackFromJunction;
+	Trajectory moveRightFromJunction;
 
 	enum TrajectoryState{
 		MOVE_TO_CONE,
@@ -35,8 +37,7 @@ public class Lautonomous extends LinearOpMode{
 		MOVE_TO_SPOT_ONE,
 		MOVE_TO_SPOT_TWO,
 		MOVE_TO_SPOT_THREE,
-		LOW_TERMINAL,
-		HIGH_TERMINAL,
+		DROP_CONE,
 		IDLE
 	}
 
@@ -59,7 +60,6 @@ public class Lautonomous extends LinearOpMode{
 		moveToCone = robot.drive.trajectoryBuilder(currPose)
 				.back(14)
 				.build();
-
 
 		/*Pre-Start/Post-Init Loop*/
 		while (!opModeIsActive()){
@@ -90,14 +90,20 @@ public class Lautonomous extends LinearOpMode{
 					coneColor1 = robot.colorSensor1.getConeColor();
 					coneColor2 = robot.colorSensor2.getConeColor();
 					if (coneColor1 == "Fuchsia" || coneColor2 == "Fuchsia"){
+						robot.lift.setNextLevel(robot.lift.lowTerminal);
+						robot.lift.moveLift();
 						desiredState = TrajectoryState.MOVE_TO_SPOT_ONE;
 						this.trajectoryState = TrajectoryState.DITCH_CONE;
 					}
 					else if (coneColor1 == "Cyan" || coneColor2 == "Cyan"){
+						robot.lift.setNextLevel(robot.lift.highTerminal);
+						robot.lift.moveLift();
 						desiredState = TrajectoryState.MOVE_TO_SPOT_TWO;
 						this.trajectoryState = TrajectoryState.DITCH_CONE;
 					}
 					else if (coneColor1 == "Yellow" || coneColor2 == "Yellow"){
+						robot.lift.setNextLevel(robot.lift.highTerminal);
+						robot.lift.moveLift();
 						desiredState = TrajectoryState.MOVE_TO_SPOT_THREE;
 						this.trajectoryState = TrajectoryState.DITCH_CONE;
 					}
@@ -117,7 +123,7 @@ public class Lautonomous extends LinearOpMode{
 					moveToSpotOne = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(24).build();
 					robot.drive.followTrajectory(moveToSpotOne);
 					// AFTER SPOT ONE GO TO LOW-TERMINAL
-					this.trajectoryState = TrajectoryState.LOW_TERMINAL;
+					this.trajectoryState = TrajectoryState.DROP_CONE;
 					break;
 
 				case MOVE_TO_SPOT_TWO:
@@ -126,62 +132,45 @@ public class Lautonomous extends LinearOpMode{
 					backUp = robot.drive.trajectoryBuilder(moveToSpotTwo.end()).forward(4).build();
 					robot.drive.followTrajectory(backUp);
 					// AFTER SPOT TWO GO TO HIGH-TERMINAL
-					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
+					this.trajectoryState = TrajectoryState.DROP_CONE;
 					break;
 
 				case MOVE_TO_SPOT_THREE:
 					moveToSpotThree = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeLeft(24).build();
 					robot.drive.followTrajectory(moveToSpotThree);
 					// AFTER SPOT THREE GO TO HIGH-TERMINAL
-					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
+					this.trajectoryState = TrajectoryState.DROP_CONE;
 					break;
 
-				// TODO: DOUBLE CHECK THIS
-				case LOW_TERMINAL:
-					// TODO: DOUBLE CHECK TO MAKE SURE THIS 135 IS COUNTER-CLOCKWISE
-					// TODO: OTHERWISE THIS NEEDS TO BE -135
-					robot.drive.turn(135);
-					robot.lift.setNextLevel(robot.lift.lowTerminal);
+				case DROP_CONE:
+					// Turn robot around
+					robot.drive.turn(Math.PI);
+					// Strafe to junction
+					moveLeftToJunction = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeLeft(12).build();
+					robot.drive.followTrajectory(moveLeftToJunction);
+					while(robot.drive.isBusy()){}
+					moveForwardToJunction = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(5.25).build();
+					robot.drive.followTrajectory(moveForwardToJunction);
+					while(robot.drive.isBusy()){}
+					// Lower lift a touch
+					robot.lift.setNextLevel((int) robot.lift.getCurrentPosition() - 1);
 					robot.lift.moveLift();
-					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
-					robot.drive.followTrajectory(moveToTerminal);
 					// Drop cone
 					robot.claw.OpenPosition();
-					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
-					robot.drive.followTrajectory(moveFromTerminal);
-					// Reset robot to initial state
+					// Raise lift a touch
+					robot.lift.setNextLevel((int) robot.lift.getCurrentPosition() + 1);
+					robot.lift.moveLift();
+					// Move to parking spot
+					moveBackFromJunction = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(5.25).build();
+					robot.drive.followTrajectory(moveBackFromJunction);
+					while(robot.drive.isBusy()){}
+					moveRightFromJunction = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(12).build();
+					robot.drive.followTrajectory(moveRightFromJunction);
+					while(robot.drive.isBusy()){}
+					// Reset robot state
 					robot.lift.setNextLevel(robot.lift.active);
 					robot.lift.moveLift();
-					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
-					// TODO: OTHERWISE THIS NEEDS TO BE -45
-					robot.drive.turn(45);
-					this.trajectoryState = TrajectoryState.IDLE;
-					break;
-
-				//TODO: DOUBLE CHECK THIS
-				case HIGH_TERMINAL:
-					// TODO: DOUBLE CHECK TO MAKE SURE THIS 135 IS COUNTER-CLOCKWISE
-					// TODO: OTHERWISE THIS NEEDS TO BE -135
-					robot.drive.turn(135);
-					robot.lift.setNextLevel(robot.lift.highTerminal);
-					robot.lift.moveLift();
-					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
-					robot.drive.followTrajectory(moveToTerminal);
-					// Drop cone
-					robot.claw.OpenPosition();
-					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
-					robot.drive.followTrajectory(moveFromTerminal);
-					// Reset robot to initial state
-					robot.lift.setNextLevel(robot.lift.active);
-					robot.lift.moveLift();
-					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
-					// TODO: OTHERWISE THIS NEEDS TO BE -45
-					robot.drive.turn(45);
-					this.trajectoryState = TrajectoryState.IDLE;
+					robot.claw.ClosePosition();
 					break;
 
 				case IDLE:

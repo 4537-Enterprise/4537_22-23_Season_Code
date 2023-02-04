@@ -41,6 +41,9 @@ public class CompRobot{
 		telemetry.addData("Robot", "Initialized");
 		telemetry.update();
 
+		// Close claw at beginning
+		this.claw.ClosePosition();
+
 	}
 	public void robotInit(){
 		packet.put("Robot", "Initialized");
