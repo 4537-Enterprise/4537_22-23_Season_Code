@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 public class Lautonomous extends LinearOpMode{
 
 	CompRobot robot;
-
+	int counter = 0;
 	Pose2d poseEstimate;
 	String coneColor1;
 	String coneColor2;
@@ -107,6 +107,11 @@ public class Lautonomous extends LinearOpMode{
 					else {
 						creep = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(1).build();
 						robot.drive.followTrajectory(creep);
+						counter++;
+						if(counter >= 7){
+							desiredState= Lautonomous.TrajectoryState.MOVE_TO_SPOT_ONE;
+							this.trajectoryState = Lautonomous.TrajectoryState.DITCH_CONE;
+						}
 					}
 					break;
 

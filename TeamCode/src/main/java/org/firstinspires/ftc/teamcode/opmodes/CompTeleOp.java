@@ -168,12 +168,12 @@ public class CompTeleOp extends LinearOpMode{
 			robot.colorSensor1.getConeColor();
 			robot.colorSensor2.getConeColor();
 			telemetry.addData("claw value: ", robot.claw.getPosition());
-//			telemetry.addData("red1", robot.colorSensor1.red);
-//			telemetry.addData("blue1", robot.colorSensor1.blue);
-//			telemetry.addData("green1", robot.colorSensor1.green);
-//			telemetry.addData("red2", robot.colorSensor2.red);
-//			telemetry.addData("blue2", robot.colorSensor2.blue);
-//			telemetry.addData("green2", robot.colorSensor2.green);
+			telemetry.addData("red1", robot.colorSensor1.red);
+			telemetry.addData("blue1", robot.colorSensor1.blue);
+			telemetry.addData("green1", robot.colorSensor1.green);
+			telemetry.addData("red2", robot.colorSensor2.red);
+			telemetry.addData("blue2", robot.colorSensor2.blue);
+			telemetry.addData("green2", robot.colorSensor2.green);
 
 			//telemetry.addData("x", poseEstimate.getX());
 			//telemetry.addData("y", poseEstimate.getY());

@@ -37,10 +37,10 @@ public class CompRobot{
     	claw = new Claw(map);
 		colorSensor1 = new MyColorSensor(map, "ColorSensor1");
 		colorSensor2 = new MyColorSensor(map, "ColorSensor2");
-		//limitSwitch = new LimitSwitch(map);
+		//li-mitSwitch = new LimitSwitch(map);
 		telemetry.addData("Robot", "Initialized");
 		telemetry.update();
-
+		this.claw.ClosePosition();
 	}
 	public void robotInit(){
 		packet.put("Robot", "Initialized");
