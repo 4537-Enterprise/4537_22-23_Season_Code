@@ -11,11 +11,6 @@ import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rautonomous", group = "test")
 public class Rautonomous extends LinearOpMode{
-//TODO: CONFIGURE THE DRIVER HUB FOR TWO COLOR SENSORS
-	//TODO: DON'T FORGET THE ABOVE LINE
-	//TODO: BUT ACTUALLY, DON'T FORGET TO DO THIS
-	//TODO: YOU DID THIS RIGHT?
-	//TODO: CONFIGURE THE DRIVER HUB FOR TWO COLOR SENSORS
 	CompRobot robot;
 	boolean robotInitFlag = false;
 	int counter = 0;
@@ -174,17 +169,17 @@ public class Rautonomous extends LinearOpMode{
 				case HIGH_TERMINAL:
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
 //					// TODO: OTHERWISE THIS NEEDS TO BE 135
-					robot.drive.turn(-135);
+					robot.drive.turn(Math.toRadians(-135));
 //					// Set lift and arm before we move
 					robot.lift.setNextLevel(robot.lift.highTerminal);
 					robot.lift.moveLift();
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
+					moveToTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
 					robot.drive.followTrajectory(moveToTerminal);
 //					// Drop cone
 					robot.claw.OpenPosition();
 //					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
+					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
 					robot.drive.followTrajectory(moveFromTerminal);
 //					// Reset robot to initial state
 					robot.lift.setNextLevel(robot.lift.active);

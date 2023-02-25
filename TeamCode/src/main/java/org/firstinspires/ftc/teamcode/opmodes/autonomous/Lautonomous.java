@@ -112,7 +112,6 @@ public class Lautonomous extends LinearOpMode{
 					robot.drive.followTrajectory(ditchCone);
 					this.trajectoryState = desiredState;
 					break;
-
 				case MOVE_TO_SPOT_ONE:
 					moveToSpotOne = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(24).build();
 					robot.drive.followTrajectory(moveToSpotOne);

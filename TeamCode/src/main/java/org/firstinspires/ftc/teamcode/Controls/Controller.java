@@ -24,12 +24,17 @@ public class Controller{
 	  //  public ButtonReader armPickUpButton; // button Y
 		public ButtonReader liftUpButton; //D-pad Up
 		public ButtonReader liftDownButton; //D-pad Down
-	//	public TriggerReader swingFrontTrigger; //Left trigger
-		//public ButtonReader swingBackButton; // Left bumper
-		public TriggerReader liftMoveTrigger; //  right trigger
+		//public TriggerReader liftMoveTrigger; //  right trigger
 		public ButtonReader EmergancyClose; // B button
-		public ButtonReader lowestLevelButton; // Right Bumper
-
+		//public ButtonReader lowestLevelButton; // Right Bumper
+		public ButtonReader Low; //Left Bumper
+		public ButtonReader Medium; //Right Bumper
+		public TriggerReader Active; //Left Trigger
+		public TriggerReader High; //Right Trigger
+	//left trigger activd
+	//left bumper is low
+	// right bumper is medium
+	//right trigger is high
 
 		//TODO: Make constructor take second parameter ControlScheme
 		public Controller(GamepadEx gamepadEx1){
@@ -53,18 +58,29 @@ public class Controller{
 			liftDownButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.DPAD_DOWN );
 			this.buttons.add(this.liftDownButton);
 
-//			swingFrontTrigger = new TriggerReader( gamepadEx1, GamepadKeys.Trigger.LEFT_TRIGGER);
-//			this.triggers.add (this.swingFrontTrigger);
+
+			Low = new ButtonReader( gamepadEx1, GamepadKeys.Button.LEFT_BUMPER );
+			this.buttons.add(this.Low);
+
+			Medium = new ButtonReader( gamepadEx1, GamepadKeys.Button.RIGHT_BUMPER);
+			this.buttons.add(this.Medium);
+
+			High = new TriggerReader( gamepadEx1, GamepadKeys.Trigger.RIGHT_TRIGGER );
+			this.triggers.add(this.High);
+
+			Active = new TriggerReader( gamepadEx1, GamepadKeys.Trigger.LEFT_TRIGGER );
+			this.triggers.add(this.Active);
+//			liftMoveTrigger = new TriggerReader(gamepadEx1, GamepadKeys.Trigg
+//			er.RIGHT_TRIGGER);
+//			this.triggers.add (this.liftMoveTrigger);
 //
-//			swingBackButton = new ButtonReader( gamepadEx1, GamepadKeys.Button.LEFT_BUMPER );
-//			this.buttons.add(this.swingBackButton);
+//			lowestLevelButton = new ButtonReader (gamepadEx1, GamepadKeys.Button.RIGHT_BUMPER);
+//			this.buttons.add(this.lowestLevelButton);
 
-			liftMoveTrigger = new TriggerReader(gamepadEx1, GamepadKeys.Trigger.RIGHT_TRIGGER);
-			this.triggers.add (this.liftMoveTrigger);
 
-			lowestLevelButton = new ButtonReader (gamepadEx1, GamepadKeys.Button.RIGHT_BUMPER);
-			this.buttons.add(this.lowestLevelButton);
 		}
+
+
 
 		//TODO: Make a function that takes in a gamepadEx and maps the buttons to pre-named buttonreaders
 

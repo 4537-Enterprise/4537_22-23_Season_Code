@@ -13,12 +13,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.apache.commons.math3.analysis.function.Power;
 import org.firstinspires.ftc.teamcode.subsystems.Claw.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 import org.firstinspires.ftc.teamcode.Controls.Controller;
 import org.firstinspires.ftc.teamcode.Controls.DriverController;
 
 
 @TeleOp(name = "CompTeleOp")
+
 public class CompTeleOp extends LinearOpMode{
 	CompRobot robot;
 	double directionControl = 1; //One Forward = 1 and -1 = backwards
@@ -37,7 +39,6 @@ public class CompTeleOp extends LinearOpMode{
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 	Controller payloadController;
 	DriverController driverController;
-
 	@Override
 	public void runOpMode() throws InterruptedException{
 		GamepadEx payloadcontrollerEx = new GamepadEx(gamepad2);
@@ -114,10 +115,26 @@ public class CompTeleOp extends LinearOpMode{
 			if (payloadController.liftDownButton.wasJustPressed()){
 				robot.lift.moveDownOneLevel();
 			}
-
-			if (payloadController.liftMoveTrigger.wasJustPressed()){
+			if (payloadController.High.wasJustPressed()){
+				robot.lift.setNextLevel(Lift.highTerminal);
 				robot.lift.moveLift();
 			}
+			if (payloadController.Medium.wasJustPressed()){
+				robot.lift.setNextLevel(Lift.medTerminal);
+				robot.lift.moveLift();
+			}
+			if (payloadController.Low.wasJustPressed()) {
+				robot.lift.setNextLevel(Lift.lowTerminal);
+				robot.lift.moveLift();
+			}
+			if (payloadController.Active.wasJustPressed()) {
+				robot.lift.setNextLevel(Lift.active);
+				robot.lift.moveLift();
+			}
+
+//			if (payloadController.liftMoveTrigger.wasJustPressed()){
+//				robot.lift.moveLift();
+//			}
 //			if (payloadController.swingFrontTrigger.wasJustPressed()&& robot.lift.currPosition == "highTerminal"){
 //				robot.arm.setArmPositionUp();
 //			}
@@ -145,14 +162,14 @@ public class CompTeleOp extends LinearOpMode{
 			if (gamepad2.right_stick_y <= -0.5){
 				robot.lift.moveLiftUpManual();
 			}
-			if (payloadController.lowestLevelButton.wasJustPressed()){
-				tempLiftLevelInt = robot.lift.getPositionValue(robot.lift.currPosition);
-				robot.lift.setNextLevel(robot.lift.active);
-				robot.lift.nextPosition = "active";
-				robot.lift.moveLift();
-				robot.lift.setNextLevel(tempLiftLevelInt);
-				robot.lift.nextPosition = robot.lift.getPositionString(tempLiftLevelInt);
-			}
+//			if (payloadController.lowestLevelButton.wasJustPressed()){
+//				tempLiftLevelInt = robot.lift.getPositionValue(robot.lift.currPosition);
+//				robot.lift.setNextLevel(robot.lift.active);
+//				robot.lift.nextPosition = "active";
+//				robot.lift.moveLift();
+//				robot.lift.setNextLevel(tempLiftLevelInt);
+//				robot.lift.nextPosition = robot.lift.getPositionString(tempLiftLevelInt);
+//			}
 
 			driverController.readButtons();
 			payloadController.readButtons();
