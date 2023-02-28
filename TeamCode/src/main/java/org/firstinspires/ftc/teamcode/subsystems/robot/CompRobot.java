@@ -46,5 +46,7 @@ public class CompRobot{
 		packet.put("Robot", "Initialized");
 		dashboard.sendTelemetryPacket(packet);
 		this.lift.setNextLevel(this.lift.active);
-		this.lift.moveLift();}
+		this.lift.moveLift();
+		this.claw.ClosePosition();
+	}
 }

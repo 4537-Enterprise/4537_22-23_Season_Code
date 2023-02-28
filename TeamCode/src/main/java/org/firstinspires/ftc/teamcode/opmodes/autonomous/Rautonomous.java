@@ -47,7 +47,6 @@ public class Rautonomous extends LinearOpMode{
 	FtcDashboard dashboard = FtcDashboard.getInstance();
 
 	Pose2d currPose = new Pose2d(0, 0, Math.toRadians(0.0));
-
 	@Override
 	public void runOpMode() throws InterruptedException{
 		robot = new CompRobot(hardwareMap, telemetry);
@@ -150,45 +149,48 @@ public class Rautonomous extends LinearOpMode{
                 	robot.lift.setNextLevel(robot.lift.lowTerminal);
 					robot.lift.moveLift();
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					 moveToTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
+
+					 moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(9.5).build();
 					 robot.drive.followTrajectory(moveToTerminal);
 //					// Drop cone
 				robot.claw.OpenPosition();
 //					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
+					moveFromTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(8).build();
 					robot.drive.followTrajectory(moveFromTerminal);
 //					// Reset robot to initial state
 					robot.lift.setNextLevel(robot.lift.active);
 					robot.lift.moveLift();
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
 //					// TODO: OTHERWISE THIS NEEDS TO BE 45
-					robot.drive.turn(-45);
+					robot.drive.turn(Math.toRadians(-45));
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
 				case HIGH_TERMINAL:
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
 //					// TODO: OTHERWISE THIS NEEDS TO BE 135
-					robot.drive.turn(Math.toRadians(-135));
+					robot.drive.turn(Math.toRadians(-160));
 //					// Set lift and arm before we move
 					robot.lift.setNextLevel(robot.lift.highTerminal);
 					robot.lift.moveLift();
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					moveToTerminal = robot.drive.trajectoryBuilder(currPose).back(9.5).build();
+					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(7.5).build();
 					robot.drive.followTrajectory(moveToTerminal);
 //					// Drop cone
 					robot.claw.OpenPosition();
 //					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-					moveFromTerminal = robot.drive.trajectoryBuilder(currPose).forward(9.5).build();
+					moveFromTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(8).build();
 					robot.drive.followTrajectory(moveFromTerminal);
 //					// Reset robot to initial state
 					robot.lift.setNextLevel(robot.lift.active);
 					robot.lift.moveLift();
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
 //					// TODO: OTHERWISE THIS NEEDS TO BE 45
-					robot.drive.turn(-45);
+					robot.drive.turn(Math.toRadians(-45));
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
+
+
 
 				case IDLE:
 					break;
