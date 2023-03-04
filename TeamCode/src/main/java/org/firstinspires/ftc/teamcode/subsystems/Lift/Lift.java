@@ -29,13 +29,16 @@ public class Lift{
 
 	//these constants define the different heights the lift will be
 	public static final int highTerminal=15;// to the height of 36 inches, high terminal 33, 1/4
+	public static final int lowHigh=12;// DO NOT USE IN TELEOP
 	public static final int medTerminal=10;//adding 1 //at 27 inches, up three inches
 	public static final int lowTerminal=6; //adding 2//adding 1 //14 inches, up 8 inches
-//	public static final int groundTerminal=4;
+	public static final int lowlow=4; //DO NOT USE IN TELEOP
+	//	public static final int groundTerminal=4;
 //	public static final int ground=1;
 	public static final int active=0;
 
 	public int nextLevel = 0;
+
 
 	public String currPosition;
 	public String nextPosition = currPosition;
@@ -86,6 +89,10 @@ public class Lift{
 
 	public void moveDownOneLevel() {
 		switch(this.nextLevel) {
+			case lowlow:
+				this.setNextLevel(active);
+				this.nextPosition = "active";
+
 			case active:
 				this.setNextLevel(this.active);
 				this.nextPosition = "active";

@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.subsystems.Lift.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.subsystems.robot.CompRobot;
 
@@ -27,6 +28,7 @@ public class Rautonomous extends LinearOpMode{
 	Trajectory creep;
 	Trajectory moveToTerminal;
 	Trajectory moveFromTerminal;
+	Trajectory moveBack;
 
 	enum TrajectoryState{
 		MOVE_TO_CONE,
@@ -80,6 +82,7 @@ public class Rautonomous extends LinearOpMode{
 
 			switch (this.trajectoryState){
 				case MOVE_TO_CONE:
+					robot.claw.ClosePosition();
 					robot.drive.followTrajectory(moveToCone);
 					this.trajectoryState = TrajectoryState.READ_CONE;
 					break;
@@ -112,29 +115,34 @@ public class Rautonomous extends LinearOpMode{
 					break;
 
 				case DITCH_CONE:
+					robot.claw.ClosePosition();
 					ditchCone = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(11).build();
 					robot.drive.followTrajectory(ditchCone);
 					this.trajectoryState = desiredState;
 					break;
 
 				case MOVE_TO_SPOT_ONE:
+					robot.lift.setNextLevel(Lift.highTerminal);
+					robot.lift.moveLift();
 					moveToSpotOne = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(22).build();
 					robot.drive.followTrajectory(moveToSpotOne);
 					// AFTER SPOT ONE GO TO HIGH TERMINAL
-					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
 				case MOVE_TO_SPOT_TWO:
+					robot.lift.setNextLevel(Lift.highTerminal);
+					robot.lift.moveLift();
 					moveToSpotTwo = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(28).build();
 					robot.drive.followTrajectory(moveToSpotTwo);
 					backUp = robot.drive.trajectoryBuilder(moveToSpotTwo.end()).forward(4).build();
-					robot.drive.followTrajectory(backUp);
 					// AFTER SPOT TWO GO TO HIGH TERMINAL
 					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
 					break;
 
 				case MOVE_TO_SPOT_THREE:
+					robot.lift.setNextLevel(Lift.lowTerminal);
+					robot.lift.moveLift();
 					moveToSpotThree = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeLeft(22).build();
 					robot.drive.followTrajectory(moveToSpotThree);
 					// AFTER SPOT THREE GO TO LOW TERMINAL
@@ -142,40 +150,15 @@ public class Rautonomous extends LinearOpMode{
 					break;
 
   					case LOW_TERMINAL:
-//					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS COUNTER-CLOCKWISE
+					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
 //					// TODO: OTHERWISE THIS NEEDS TO BE 135
-     				robot.drive.turn(-135);
+					robot.drive.turn(Math.toRadians(-147));
 //					// Set lift and arm before we move
-                	robot.lift.setNextLevel(robot.lift.lowTerminal);
-					robot.lift.moveLift();
-//					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-
-					 moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(9.5).build();
-					 robot.drive.followTrajectory(moveToTerminal);
-//					// Drop cone
-				robot.claw.OpenPosition();
-//					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
-					moveFromTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(8).build();
-					robot.drive.followTrajectory(moveFromTerminal);
-//					// Reset robot to initial state
-					robot.lift.setNextLevel(robot.lift.active);
-					robot.lift.moveLift();
-//					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
-//					// TODO: OTHERWISE THIS NEEDS TO BE 45
-					robot.drive.turn(Math.toRadians(-45));
-					this.trajectoryState = TrajectoryState.IDLE;
-					break;
-
-				case HIGH_TERMINAL:
-//					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
-//					// TODO: OTHERWISE THIS NEEDS TO BE 135
-					robot.drive.turn(Math.toRadians(-160));
-//					// Set lift and arm before we move
-					robot.lift.setNextLevel(robot.lift.highTerminal);
-					robot.lift.moveLift();
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
 					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(7.5).build();
 					robot.drive.followTrajectory(moveToTerminal);
+					robot.lift.setNextLevel(Lift.lowlow);
+					robot.lift.moveLift();
 //					// Drop cone
 					robot.claw.OpenPosition();
 //					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
@@ -187,6 +170,34 @@ public class Rautonomous extends LinearOpMode{
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
 //					// TODO: OTHERWISE THIS NEEDS TO BE 45
 					robot.drive.turn(Math.toRadians(-45));
+					moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(2).build();
+					robot.drive.followTrajectory(moveBack);
+					this.trajectoryState = TrajectoryState.IDLE;
+					break;
+
+				case HIGH_TERMINAL:
+//					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
+//					// TODO: OTHERWISE THIS NEEDS TO BE 135
+					robot.drive.turn(Math.toRadians(-147));
+//					// Set lift and arm before we move
+//					// TODO: DOUBLE-CHECK THIS MEASUREMENT
+					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(7.5).build();
+					robot.drive.followTrajectory(moveToTerminal);
+					robot.lift.setNextLevel(Lift.lowHigh);
+					robot.lift.moveLift();
+//					// Drop cone
+					robot.claw.OpenPosition();
+//					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
+					moveFromTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(8).build();
+					robot.drive.followTrajectory(moveFromTerminal);
+//					// Reset robot to initial state
+					robot.lift.setNextLevel(robot.lift.active);
+					robot.lift.moveLift();
+//					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
+//					// TODO: OTHERWISE THIS NEEDS TO BE 45
+					robot.drive.turn(Math.toRadians(-45));
+					moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(2).build();
+					robot.drive.followTrajectory(moveBack);
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
