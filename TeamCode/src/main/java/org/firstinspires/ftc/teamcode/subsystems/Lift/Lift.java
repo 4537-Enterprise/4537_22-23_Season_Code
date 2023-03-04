@@ -31,6 +31,7 @@ public class Lift{
 	public static final int highTerminal=15;// to the height of 36 inches, high terminal 33, 1/4
 	public static final int lowHigh=12;// DO NOT USE IN TELEOP
 	public static final int medTerminal=10;//adding 1 //at 27 inches, up three inches
+	public static final int Highlow=7;
 	public static final int lowTerminal=6; //adding 2//adding 1 //14 inches, up 8 inches
 	public static final int lowlow=4; //DO NOT USE IN TELEOP
 	//	public static final int groundTerminal=4;

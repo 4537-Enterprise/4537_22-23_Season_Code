@@ -37,8 +37,9 @@ public class Rautonomous extends LinearOpMode{
 		MOVE_TO_SPOT_ONE,
 		MOVE_TO_SPOT_TWO,
 		MOVE_TO_SPOT_THREE,
-		LOW_TERMINAL,
-		HIGH_TERMINAL,
+		COLOR_3,
+		COLOR_2,
+		COLOR_1,
 		IDLE
 	}
 
@@ -83,6 +84,8 @@ public class Rautonomous extends LinearOpMode{
 			switch (this.trajectoryState){
 				case MOVE_TO_CONE:
 					robot.claw.ClosePosition();
+					robot.lift.setNextLevel(Lift.lowTerminal);
+					robot.lift.moveLift();
 					robot.drive.followTrajectory(moveToCone);
 					this.trajectoryState = TrajectoryState.READ_CONE;
 					break;
@@ -126,8 +129,7 @@ public class Rautonomous extends LinearOpMode{
 					robot.lift.moveLift();
 					moveToSpotOne = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeRight(22).build();
 					robot.drive.followTrajectory(moveToSpotOne);
-					// AFTER SPOT ONE GO TO HIGH TERMINAL
-					this.trajectoryState = TrajectoryState.IDLE;
+					this.trajectoryState = TrajectoryState.COLOR_1;
 					break;
 
 				case MOVE_TO_SPOT_TWO:
@@ -137,25 +139,25 @@ public class Rautonomous extends LinearOpMode{
 					robot.drive.followTrajectory(moveToSpotTwo);
 					backUp = robot.drive.trajectoryBuilder(moveToSpotTwo.end()).forward(4).build();
 					// AFTER SPOT TWO GO TO HIGH TERMINAL
-					this.trajectoryState = TrajectoryState.HIGH_TERMINAL;
+					this.trajectoryState = TrajectoryState.COLOR_2;
 					break;
 
 				case MOVE_TO_SPOT_THREE:
-					robot.lift.setNextLevel(Lift.lowTerminal);
+					robot.lift.setNextLevel(Lift.Highlow);
 					robot.lift.moveLift();
 					moveToSpotThree = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).strafeLeft(22).build();
 					robot.drive.followTrajectory(moveToSpotThree);
 					// AFTER SPOT THREE GO TO LOW TERMINAL
-					this.trajectoryState = TrajectoryState.LOW_TERMINAL;
+					this.trajectoryState = TrajectoryState.COLOR_3;
 					break;
 
-  					case LOW_TERMINAL:
+				case COLOR_3:
 					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
 //					// TODO: OTHERWISE THIS NEEDS TO BE 135
-					robot.drive.turn(Math.toRadians(-147));
+					robot.drive.turn(Math.toRadians(-145));
 //					// Set lift and arm before we move
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(7.5).build();
+					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(6.5).build();
 					robot.drive.followTrajectory(moveToTerminal);
 					robot.lift.setNextLevel(Lift.lowlow);
 					robot.lift.moveLift();
@@ -170,18 +172,19 @@ public class Rautonomous extends LinearOpMode{
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
 //					// TODO: OTHERWISE THIS NEEDS TO BE 45
 					robot.drive.turn(Math.toRadians(-45));
-					moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(2).build();
+					moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(4).build();
 					robot.drive.followTrajectory(moveBack);
+					robot.claw.ClosePosition();
 					this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
-				case HIGH_TERMINAL:
-//					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
+				case COLOR_2:
+					// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
 //					// TODO: OTHERWISE THIS NEEDS TO BE 135
-					robot.drive.turn(Math.toRadians(-147));
+					robot.drive.turn(Math.toRadians(-140));
 //					// Set lift and arm before we move
 //					// TODO: DOUBLE-CHECK THIS MEASUREMENT
-					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(7.5).build();
+					moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(6.7).build();
 					robot.drive.followTrajectory(moveToTerminal);
 					robot.lift.setNextLevel(Lift.lowHigh);
 					robot.lift.moveLift();
@@ -195,10 +198,39 @@ public class Rautonomous extends LinearOpMode{
 					robot.lift.moveLift();
 //					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
 //					// TODO: OTHERWISE THIS NEEDS TO BE 45
-					robot.drive.turn(Math.toRadians(-45));
-					moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(2).build();
+					robot.drive.turn(Math.toRadians(-50));
+					moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(4).build();
 					robot.drive.followTrajectory(moveBack);
+					robot.claw.ClosePosition();
 					this.trajectoryState = TrajectoryState.IDLE;
+					break;
+//
+
+				case COLOR_1:
+							// TODO: DOUBLE CHECK TO MAKE SURE THIS -135 IS CLOCKWISE
+//					// TODO: OTHERWISE THIS NEEDS TO BE 135
+							robot.drive.turn(Math.toRadians(-144));
+//					// Set lift and arm before we move
+//					// TODO: DOUBLE-CHECK THIS MEASUREMENT
+						moveToTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).forward(8.3).build();
+						robot.drive.followTrajectory(moveToTerminal);
+						robot.lift.setNextLevel(Lift.lowHigh);
+						robot.lift.moveLift();
+//					// Drop cone
+						robot.claw.OpenPosition();
+//					// NOTE: Keep claw open to make grabbing next cone in Tele Op easier
+						moveFromTerminal = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(8).build();
+						robot.drive.followTrajectory(moveFromTerminal);
+//					// Reset robot to initial state
+						robot.lift.setNextLevel(robot.lift.active);
+						robot.lift.moveLift();
+//					// TODO: DOUBLE CHECK TO MAKE SURE THIS ROTATES THE CORRECT DIRECTION
+//					// TODO: OTHERWISE THIS NEEDS TO BE 45
+						robot.drive.turn(Math.toRadians(-50));
+						moveBack = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate()).back(4).build();
+						robot.drive.followTrajectory(moveBack);
+						robot.claw.ClosePosition();
+						this.trajectoryState = TrajectoryState.IDLE;
 					break;
 
 
